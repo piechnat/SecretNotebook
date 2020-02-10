@@ -73,7 +73,7 @@ export default class Settings extends React.Component {
       }
     });
   }
-  clearAllClickHandler = () => {
+  clearDataClickHandler = () => {
     confirmDialog('Uwaga!!! Tej operacji nie można cofnąć! ' +
       'Czy potwierdzasz usunięcie wszystkich danych aplikacji?'
     ).then((confirmed) => {
@@ -99,7 +99,7 @@ export default class Settings extends React.Component {
           <button type="button" onClick={this.clearLessonsClickHandler}>
             <FaRegCalendarMinus/>Usuń zajęcia
           </button>
-          <button type="button" onClick={this.clearAllClickHandler} style={{marginRight:0}}>
+          <button type="button" onClick={this.clearDataClickHandler} style={{marginRight:0}}>
             <FaTrashAlt/>Usuń wszystko
           </button>
         </div>
