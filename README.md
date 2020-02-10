@@ -1,17 +1,8 @@
 # Secret Notebook
 
-Jakiś tekst [tekst hiperłącza](https://adres/hiperlacza).
+Application for university teachers to control the number of individual lessons 
+worked with students according to the semester allocation of hours.
 
+## Demo version
 
-
-Jakiś tekst https://adres/hiperlacza
-
-## Demo
-
-Jakiś tekst pierwsza linia.
-Jakiś tekst `druga` linia.
-
-### Nagłówek 3
-
-Jakiś `tekst` pierwsza linia.<br />
-Jakiś tekst druga linia.
+https://secretnotebook.piechnat.pl/demo
