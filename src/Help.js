@@ -24,7 +24,7 @@ const Help = () => {
         akompaniatorów w&nbsp;Akademii Muzycznej w&nbsp;Łodzi (2.&nbsp;października 2019) 
         i&nbsp;ma charakter humorystyczny.
       </p>
-      {!appNav.pwaStart&&<div>
+      {!appNav.pwaMode&&<div>
         <h3>Instalacja w urządzeniu mobilnym</h3>
         <p>
           <b>Secret Notebook</b> można zainstalować poprzez dodanie jego ikony do ekranu głównego 
@@ -58,7 +58,7 @@ const Help = () => {
         urządzeniu (lub w&nbsp;innej przeglądarce stron), nie będziesz mieć dostępu do danych, 
         które wprowadzisz tutaj.
       </p>
-      {!appNav.pwaStart&&<p>
+      {!appNav.pwaMode&&<p>
         Włączanie aplikacji poprzez kliknięcie ikony na ekranie głównym gwarantuje każdorazowy 
         dostęp do danych z tej samej przeglądarki.
       </p>}

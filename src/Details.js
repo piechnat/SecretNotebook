@@ -33,11 +33,12 @@ export default class Details extends React.Component {
     }
   }
   clickOutsideHandler = (e) => {
-    let elm = this.listWrapper.current;
+    const elm = this.listWrapper.current;
     if (elm && !elm.contains(e.target)) this.changedItemKey = 0;
   }
   studentChangeHandler = (data) => {
-    this.props.history.push('/details/' + parseInt(data.value));
+    const id = parseInt(data.value);
+    if (id > 0) this.props.history.push('/details/' + id);
   }
   order = (items) => appData.lessonsReverse ? items.reverse() : items;
   render() {
@@ -56,7 +57,7 @@ export default class Details extends React.Component {
           <p className="block-mdm">Imię i nazwisko:</p>
           <QuickSelect className="block-lrg" value={student.id} 
             onChange={this.studentChangeHandler}>
-            {!student.id&&<option></option>}
+            {!student.id&&<option>WYBIERZ STUDENTA</option>}
             {this.studentList.map((stdnt, idx) => 
               <option key={idx} value={stdnt.id}>{stdnt.title}</option>
             )}
@@ -92,7 +93,7 @@ export default class Details extends React.Component {
             {this.order(student.lessons.map((item, index) => 
             <tr className={this.changedItemKey===item.key?'changed-item':''} key={index} 
               onClick={()=>{
-                appNav.push('/lesson/'+student.id+'/'+item.key);
+                appNav.push('/lesson/'+ student.id +'/'+ item.key);
                 this.changedItemKey = item.key;
               }}>
               <td>{index+1}.</td>

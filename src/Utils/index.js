@@ -30,7 +30,7 @@ class AppNav {
   scrollMemory = 0;
   onScrollMemoryChange = null;
   androidOS = /android/i.test(navigator.userAgent);
-  pwaStart = window.location.search === '?PWASTART';
+  pwaMode = window.location.search === '?PWASTART';
   reset() {}
   init(history) {
     if (!history || this._history) return false;
@@ -68,6 +68,20 @@ class AppNav {
       }
       if (homeKey === '' && location.pathname === '/list') homeKey = currKey;
       this.deltaHome = (homeKey === '') ? null : hstrList.indexOf(homeKey) - hstrPos;
+      // Double back press to exit on Android
+      if (this.androidOS && location.search === '?PWASTART') {
+        homeKey = '';
+        this.scrollMemory = -1;
+        if (action === 'POP') {
+          toastNotification(<span>Naciśnij ponownie <em>Wstecz</em>, aby zamknąć.</span>, 800);
+          setTimeout(() => this._history.push(location.pathname), 1200);
+        } else { // if first time here
+          this._history.push(location.pathname); // without search
+        }
+      } else {
+        this.scrollMemory = scrollList[hstrList[hstrPos]] || 0;
+      }
+      if (typeof this.onScrollMemoryChange === 'function') this.onScrollMemoryChange();
       /* DEBUG 
       alert(
         'action: ' + action + ' pathname: ' + location.pathname + location.search + location.hash +
@@ -75,18 +89,6 @@ class AppNav {
         '\nhstrList: [' + hstrList.join(', ') + ']\nscrollList: ' + JSON.stringify(scrollList)
         );
       */
-      this.scrollMemory = scrollList[hstrList[hstrPos]] || 0;
-      if (typeof this.onScrollMemoryChange === 'function') this.onScrollMemoryChange();
-      // Double back press to exit on Android
-      if (this.androidOS && location.search === '?PWASTART') {
-        homeKey = '';
-        if (action === 'POP') {
-          toastNotification(<span>Naciśnij ponownie <em>Wstecz</em>, aby zamknąć.</span>, 800);
-          setTimeout(() => this._history.push(location.pathname), 1200);
-        } else {
-          this._history.push(location.pathname);
-        }
-      }
     };
     window.addEventListener('beforeunload', () => {
       sessionStorage.setItem('homeKey', homeKey);

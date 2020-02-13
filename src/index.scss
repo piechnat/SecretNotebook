@@ -1,3 +1,5 @@
+@import "Assets/fonts.css";
+
 $bgColor1: #1e3464;
 $bgColor1Light: #385594;
 $bgColor2: #2c8b7c;
@@ -20,7 +22,6 @@ html {
 @media screen and (min-width: 67em) {
   html { font-size: 1.5vw; }
 }
-
 html, body { margin: 0; border: 0; padding: 0; }
 body, select, input, button, textarea  {
   font-family: var(--main-font-family);
@@ -35,7 +36,7 @@ h1, h2, h3, h4, h5, h6, b {
   font-weight: var(--main-bold-weight);
 }
 body {
-  background: $bgColor2;
+  background: $bgColor1;
   padding: 0.7rem;
   overscroll-behavior: none;
   -webkit-touch-callout: none; /* iOS Safari */
@@ -141,11 +142,16 @@ a:active svg {
 #main-warpper {
   max-width: 40rem;
   margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+}
+.document-ready #main-warpper { 
+  opacity: 1;
 }
 #fixed-background {
   position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background: linear-gradient(to bottom, $bgColor1, #1f3965 3.5rem, $bgColor2);
+  top: 0; right: 0; bottom: -20%; left: 0;
+  background: linear-gradient(to bottom, $bgColor1, #1f3965 3.5rem, $bgColor2 83%);
   z-index: -1;
 }
 #header-wrapper {
@@ -198,37 +204,39 @@ a:active svg {
 }
 #content {
   position: relative;
-  margin: 3.9rem 0 0.7rem 0;
+  margin: 3.9rem 0 0.6rem 0;
   background-color: $contBgColor;
   overflow: hidden;
   z-index: 0;
 }
 #footer-wrapper {
-  position: fixed;
   box-sizing: border-box;
   width: 100%;
+}
+#fixed-nav-bar > #footer-wrapper {
+  position: fixed;
   bottom: 0; left: 0;
   padding: 0 0.7rem 0.7rem 0.7rem;
   z-index: 2;
 }
-#footer-wrapper + #footer-margin { 
-  margin-bottom: 3.55rem; 
+#fixed-nav-bar #footer-wrapper + #footer-margin { 
+  margin-bottom: 3.6rem; 
 }
-#footer-wrapper > #footer-content-cover {
-  position: absolute;
+#fixed-nav-bar > #footer-content-cover {
+  position: fixed;
   width: 100%;
   bottom: 0; left: 0;
   height: 3rem;
   background: linear-gradient(transparent, $bgColor2 2rem);
-  z-index: -1;
+  z-index: 1;
 }
 #footer {
   box-sizing: border-box;
+  height: 3rem;
   max-width: 40rem;
   margin: 0 auto;
   border: 0;
   display: flex;
-  margin-top: 0.7rem;
   background-color: $contBgColor;
   button {
     padding: 0.8rem 0.9rem 0.8rem 0.6rem;
@@ -458,12 +466,8 @@ table.lesson-list {
 }
 
 @keyframes changed-item {
-  0% { 
-    background-color: $highlightBgColor;
-  }
-  100% {
-    background-color: $listBgColor;
-  }
+  0% { background-color: $highlightBgColor; }
+  100% { background-color: $listBgColor; }
 }
 .changed-item {
   animation: changed-item 3s ease-in;

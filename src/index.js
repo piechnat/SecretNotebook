@@ -13,29 +13,28 @@ import Details from './Details';
 import Lesson from './Lesson';
 import Settings from './Settings';
 import Help, {Demo} from './Help';
-import './Assets/fonts.css';
 import './index.scss';
 
-const NotFound = (props) => (
-  <p className="pad">Niepoprawny adres "{props.location.pathname.substr(1)}".</p>
-);
+if (appData.systemFont) setSystemFont(1);
+if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+window.addEventListener('load', () => document.documentElement.classList.add('document-ready'));
 
 class RootComponent extends React.Component {
   constructor(props) {
     super(props);
     appNav.init(props.history);
     this.state = {
-      fixedNavBar: appData.fixedNavigationBar,
-      scrollMode: appData.smoothScroll ? 'smooth' : 'auto'
+      scrollMode: appData.smoothScroll ? 'smooth' : 'auto',
+      noStretching: appData.noStretching,
+      fixedNavBar: appData.fixedNavigationBar
     };
-    setSystemFont(appData.systemFont);
   }
   componentDidMount() {
-    if (appNav.pwaStart) window.gtag('event', 'pwa_start');
+    if (appNav.pwaMode) window.gtag('event', 'pwa_start');
     if (!appData.versionEquals(config.version)) this.props.history.push('/help'); 
     appScroll.onBeforeScrolling = () => {
       document.documentElement.style.scrollBehavior = !appScroll.isUnlockedForElement() && 
-        (appNav.scrollMemory === 0 || this.state.fixedNavBar) ? 'auto' : this.state.scrollMode;
+        (appNav.scrollMemory === 0 || this.state.noStretching) ? 'auto' : this.state.scrollMode;
     };
     appNav.onScrollMemoryChange = () => appScroll.unlockBegin();
   }
@@ -71,7 +70,7 @@ class RootComponent extends React.Component {
           <h1 id="header" onClick={appNav.goHome}><span>Secret Notebook</span></h1>
         </div>
         <div id="content">
-          <FlexibleHeight duration={this.state.fixedNavBar?0:200} 
+          <FlexibleHeight duration={this.state.noStretching?0:200} 
             onContentChange={this.contentChangeHandler} onResizeEnd={this.resizeEndHandler}>
             <FadeTransition id={p1+p2} className="fade-transition" duration={300}>
               <Switch location={location}>
@@ -88,29 +87,35 @@ class RootComponent extends React.Component {
             </FadeTransition>
           </FlexibleHeight>
         </div>
-        <div id={this.state.fixedNavBar?'footer-wrapper':''}>
+        <div id={this.state.fixedNavBar?'fixed-nav-bar':''}>
           <div id="footer-content-cover"/>
-          <div id="footer">
-            <button className={pth==='list'?'disabled':''} 
-                onClick={()=>appNav.goBack()}>
-              <IoIosArrowDropleft/><span>Wstecz</span>
-            </button>
-            <div className="free-space"/>
-            <button className={pth==='settings'?'disabled':''} 
-                onClick={()=>appNav.push('/settings')}>
-              <IoIosSettings/><span>Ustawienia</span>
-            </button>
-            <button className={pth==='help'?'disabled':''} 
-                onClick={()=>appNav.push('/help')}>
-              <IoIosHelpCircleOutline/><span>Pomoc</span>
-            </button>
+          <div id="footer-wrapper">
+            <div id="footer">
+              <button className={pth==='list'?'disabled':''} 
+                  onClick={()=>appNav.goBack()}>
+                <IoIosArrowDropleft/><span>Wstecz</span>
+              </button>
+              <div className="free-space"/>
+              <button className={pth==='settings'?'disabled':''} 
+                  onClick={()=>appNav.push('/settings')}>
+                <IoIosSettings/><span>Ustawienia</span>
+              </button>
+              <button className={pth==='help'?'disabled':''} 
+                  onClick={()=>appNav.push('/help')}>
+                <IoIosHelpCircleOutline/><span>Pomoc</span>
+              </button>
+            </div>
           </div>
+          <div id="footer-margin"></div>
         </div>
-        <div id="footer-margin"></div>
       </div>
     );
   }
 };
+
+const NotFound = (props) => (
+  <p className="pad">Niepoprawny adres "{props.location.pathname.substr(1)}".</p>
+);
 
 ReactDOM.render(
   <BrowserRouter basename={config.basePath}>   

@@ -8,33 +8,47 @@ import QuickSelect from './Utils/QuickSelect';
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);
+    this.textArea = React.createRef();
+    this.state = this.getSettingsState();
+    this.state.textAreaContent = '';
+  }
+  getSettingsState() {
     const sp = appData.sortParams.split(',');
-    this.state = {
+    return {
       studentsReverse: sp[0], 
       studentsSortBy: sp[1] + (sp[2] ? ',' + sp[2] : ''), 
       lessonsReverse: appData.lessonsReverse, 
-      textAreaContent: '', 
-      dataSize: appData.getSize(),
       systemFont: appData.systemFont,
+      noStretching: appData.noStretching,
       smoothScroll: appData.smoothScroll,
-      fixedNavBar: appData.fixedNavigationBar
+      fixedNavBar: appData.fixedNavigationBar, 
+      dataSize: appData.getSize(),
     };
-    this.textArea = React.createRef();
+  }
+  updateVisualSettings() {
+    setSystemFont(this.state.systemFont);
+    this.props.sendMessage('noStretching', this.state.noStretching);
+    this.props.sendMessage('scrollMode', this.state.smoothScroll ? 'smooth' : 'auto');
+    this.props.sendMessage('fixedNavBar', this.state.fixedNavBar);
   }
   inputChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.type === "checkbox" ? (e.target.checked ? 1 : 0) : e.target.value;
     this.setState({[name]: value}, () => {
       switch (name) {
-        case 'lessonsReverse':
-          appData.lessonsReverse = this.state.lessonsReverse;
-          break;
         case 'studentsReverse': case'studentsSortBy':
           appData.sortParams = this.state.studentsReverse + ',' + this.state.studentsSortBy;
+          break;
+        case 'lessonsReverse':
+          appData.lessonsReverse = this.state.lessonsReverse;
           break;
         case 'systemFont':
           appData.systemFont = value;
           setSystemFont(value);
+          break;
+        case 'noStretching':
+          appData.noStretching = value;
+          this.props.sendMessage('noStretching', value);
           break;
         case 'smoothScroll':
           appData.smoothScroll = value;
@@ -51,7 +65,8 @@ export default class Settings extends React.Component {
   importClickHandler = () => {
     try {
       appData.importFromJSON(this.state.textAreaContent);
-      this.setState({dataSize: appData.getSize(), textAreaContent: ''});
+      this.setState({...this.getSettingsState(), textAreaContent: ''}, 
+        () => this.updateVisualSettings());
       confirmDialog('Poprawnie zaimportowano dane.', ['OK']);
     } catch {
       confirmDialog('Błąd importowania! Niepoprawny format danych.', ['OK']);
@@ -80,13 +95,7 @@ export default class Settings extends React.Component {
       if (confirmed) {
         appData.clearData();
         appNav.reset();
-        this.props.sendMessage('scrollMode', 'auto');
-        this.props.sendMessage('fixedNavBar', false);
-        setSystemFont(0);
-        this.setState({
-          studentsReverse: 0, studentsSortBy: 'order', lessonsReverse: 0, 
-          dataSize: appData.getSize(), systemFont: 0, smoothScroll: 0, fixedNavBar: 0
-        });
+        this.setState(this.getSettingsState(), () => this.updateVisualSettings());
       }
     });
   }
@@ -142,14 +151,19 @@ export default class Settings extends React.Component {
           <label htmlFor="systemFont">Czcionka systemowa</label>
         </p>
         <p className="block-lrg">
+          <input type="checkbox" name="noStretching" id="noStretching" 
+            checked={this.state.noStretching} onChange={this.inputChangeHandler} />
+          <label htmlFor="noStretching">Brak animacji rozciągania</label>
+        </p>
+        <p className="block-lrg">
           <input type="checkbox" name="smoothScroll" id="smoothScroll" 
             checked={this.state.smoothScroll} onChange={this.inputChangeHandler} />
           <label htmlFor="smoothScroll">Płynne przewijanie</label>
         </p>
-        <p>
+        <p className="block-lrg">
           <input type="checkbox" name="fixedNavBar" id="fixedNavBar" 
             checked={this.state.fixedNavBar} onChange={this.inputChangeHandler} />
-          <label htmlFor="fixedNavBar">Zawsze widoczny pasek nawigacji</label>
+          <label htmlFor="fixedNavBar">Przyklejony pasek nawigacji</label>
         </p>
         <h3>Eksport i import danych</h3>
         <textarea style={{resize:'none',width:'100%',height:'14rem'}} 

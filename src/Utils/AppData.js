@@ -107,14 +107,16 @@ class AppData {
   set sortParams(s) { localStorage.setItem('sortParams', s); }
   get systemFont() { return parseInt(localStorage.getItem('sysFont')) || 0; }
   set systemFont(v) { localStorage.setItem('sysFont', v ? 1 : 0); }
+  get noStretching() { return parseInt(localStorage.getItem('noStretching')) || 0; }
+  set noStretching(v) { localStorage.setItem('noStretching', v ? 1 : 0); }
   get smoothScroll() { return parseInt(localStorage.getItem('smthScrl')) || 0; }
   set smoothScroll(v) { localStorage.setItem('smthScrl', v ? 1 : 0); }
   get fixedNavigationBar() { return parseInt(localStorage.getItem('fixedNavBar')) || 0; }
   set fixedNavigationBar(v) { localStorage.setItem('fixedNavBar', v ? 1 : 0); }
   importFromJSON(jsonStr) {
     let data = JSON.parse(jsonStr);
-    const allowedNames = [
-      'totalHours', 'nextId', 'lsnRvrs', 'sortParams', 'sysFont', 'smthScrl'];
+    const allowedNames = ['nextId', 'totalHours', 
+      'lsnRvrs', 'sortParams', 'sysFont', 'noStretching', 'smthScrl', 'fixedNavBar'];
     Object.keys(data).forEach((key) => {
       if (key.match(this._itemRegExp) || (allowedNames.indexOf(key) > -1)) {
         localStorage.setItem(key, data[key]);
