@@ -85,12 +85,14 @@ export default class List extends React.Component {
         state.studentList = appData.getStudents();
         state.changedItemId = swapStdnt.id;
       }
-      setTimeout(() => this.setState(state), 10); // duplicate event on touch devices
+      this.setState(state);
+      e.preventDefault();
     } else if (e.target.getAttribute('name') === 'indicator') { // open menu
       setTimeout(() => this.expandMenu(id), 10);
     } else if (e.target.getAttribute('name') === 'title') { // open details
       this.setState({changedItemId: id})
       appNav.push('/details/' + id);
+      e.preventDefault();
     }
   }
   moveClickHandler = (id, idx, e) => {
