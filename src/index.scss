@@ -167,7 +167,7 @@ a:active svg {
   width: 100%;
   top: 0; left: 0;
   height: 3.5rem;
-  background: linear-gradient($bgColor1 1rem, transparent 3.5rem);
+  background: linear-gradient($bgColor1 1rem, unquote($bgColor1+'00') 3.5rem);
   z-index: 1;
 }
 #header {
@@ -227,7 +227,7 @@ a:active svg {
   width: 100%;
   bottom: 0; left: 0;
   height: 3rem;
-  background: linear-gradient(transparent, $bgColor2 2rem);
+  background: linear-gradient(unquote($bgColor2+'00'), $bgColor2 2rem);
   z-index: 1;
 }
 #footer {

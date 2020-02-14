@@ -158,7 +158,7 @@ export default class Settings extends React.Component {
         <p className="block-lrg">
           <input type="checkbox" name="smoothScroll" id="smoothScroll" 
             checked={this.state.smoothScroll} onChange={this.inputChangeHandler} />
-          <label htmlFor="smoothScroll">Płynne przewijanie</label>
+          <label htmlFor="smoothScroll">Płynne przewijanie (Android)</label>
         </p>
         <p className="block-lrg">
           <input type="checkbox" name="fixedNavBar" id="fixedNavBar" 
