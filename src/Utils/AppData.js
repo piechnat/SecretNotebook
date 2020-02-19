@@ -114,15 +114,20 @@ class AppData {
   get fixedNavigationBar() { return parseInt(localStorage.getItem('fixedNavBar')) || 0; }
   set fixedNavigationBar(v) { localStorage.setItem('fixedNavBar', v ? 1 : 0); }
   importFromJSON(jsonStr) {
-    let data = JSON.parse(jsonStr);
-    const allowedNames = ['nextId', 'totalHours', 
-      'lsnRvrs', 'sortParams', 'sysFont', 'noStretching', 'smthScrl', 'fixedNavBar'];
-    Object.keys(data).forEach((key) => {
-      if (key.match(this._itemRegExp) || (allowedNames.indexOf(key) > -1)) {
-        localStorage.setItem(key, data[key]);
-      }
-    });
-    this.validate();
+    try {
+      let data = JSON.parse(jsonStr);
+      const allowedNames = ['nextId', 'totalHours', 
+        'lsnRvrs', 'sortParams', 'sysFont', 'noStretching', 'smthScrl', 'fixedNavBar'];
+      Object.keys(data).forEach((key) => {
+        if (key.match(this._itemRegExp) || (allowedNames.indexOf(key) > -1)) {
+          localStorage.setItem(key, data[key]);
+        }
+      });
+      this.validate();
+      return true;
+    } catch {
+      return false;
+    }
   }
   exportToJSON() {
     return JSON.stringify(localStorage);

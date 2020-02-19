@@ -1,14 +1,14 @@
 import React from 'react';
 import {FiSave, FiPlus} from 'react-icons/fi';
+import {MdPersonAdd, MdGroupAdd} from 'react-icons/md';
 import {FaUserEdit, FaUserPlus, FaTrashAlt} from 'react-icons/fa';
-import {appNav, appScroll, toastNotification} from './Utils';
+import {appNav, appScroll, toastNotification, confirmDialog} from './Utils';
 import appData from './Utils/AppData';
 
 export default class Student extends React.Component {
   constructor(props) {
     super(props);
     this.student = appData.getStudent(props.match.params.id);
-    this.inputTitle = React.createRef();
     if (this.student.id) {
       this.editMode = true;
       this.state = {title: this.student.title, totalHours: this.student.totalHours}; 
@@ -16,24 +16,54 @@ export default class Student extends React.Component {
       this.editMode = false;
       this.state = {title: '', totalHours: appData.totalHours};
     }
+    this.state.multiple = false;
+    this.state.textAreaContent = '';
+    this.mainInput = React.createRef();
   }
   componentDidMount() {
-    if (!this.editMode) this.inputTitle.current.focus();
+    this.componentDidUpdate({}, {multiple: !this.state.multiple});
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.editMode && prevState.multiple !== this.state.multiple) {
+      this.mainInput.current.focus();
+    }
   }
   inputChangeHandler = (e) => this.setState({[e.target.name]: e.target.value});
   formSubmitHandler = (e) => {
     e.preventDefault();
-    let msg = 'Dodano', rec = {title: this.state.title.trim(), 
-      totalHours: parseInt(this.state.totalHours)};
-    if (this.editMode) {
-      msg = 'Zapisano';
-      rec.id = this.student.id;
+    let res = null;
+    if (this.state.multiple) { // multiple add
+      const content = this.state.textAreaContent.trim();
+      let count = 0;
+      content.split('\n').map((s) => s.trim().split(/[\s]+/)).forEach((args) => {
+        if (args.length < 2) return;
+        const totalHours = parseInt(args.splice(-1)[0]);
+        if (!(totalHours >= 0)) return;
+        const rec = {totalHours: totalHours, title: args.join(' ')};
+        res = appData.setStudent(rec);
+        count++;
+      });
+      if (count > 0) {
+        toastNotification('Dodano studentów: '+ count);
+      } else {
+        confirmDialog(<div>Wypisz studentów i&nbsp;przydziały godzin w&nbsp;kolejnych wierszach, 
+          np.:<br/><pre>Krzysztof Kowalczyk 24<br/>Jan Kowalski 12</pre>itd.</div>, ['OK']);
+      }
+    } else { // single add or edit
+      let msg = 'Dodano', rec = {title: this.state.title.trim(), 
+        totalHours: parseInt(this.state.totalHours)};
+      if (this.editMode) {
+        msg = 'Zapisano';
+        rec.id = this.student.id;
+      }
+      res = appData.setStudent(rec);
+      toastNotification(msg + ' studenta – ' + rec.title);
     }
-    const res = appData.setStudent(rec);
-    toastNotification(msg + ' studenta – ' + rec.title);
-    sessionStorage.setItem('changedItemId', res.id);
-    appScroll.unlockForElement();
-    appNav.goBack();
+    if (res) {
+      sessionStorage.setItem('changedItemId', res.id);
+      appScroll.unlockForElement();
+      appNav.goBack();
+    }
   }
   removeClickHandler = (e) => {
     e.preventDefault();
@@ -64,21 +94,37 @@ export default class Student extends React.Component {
           </div> :
           <h2><FaUserPlus/>Dodawanie studenta</h2>
         }
-        <p className="block-mdm">Imię i nazwisko:</p>
-        <input className="block-lrg" type="text" name="title" autoComplete="on" required
-          ref={this.inputTitle} value={this.state.title} onChange={this.inputChangeHandler} />
-        <br/>
-        <p className="block-mdm">Przydział godzin:</p>
-        <div className="block-lrg">
-          <input type="number" className="block-sml" min={0} max={99}
-            autoComplete="on" name="totalHours" required 
-            value={this.state.totalHours} onChange={this.inputChangeHandler} />
-        </div>
-        <br/>
+        {this.state.multiple ?
+          <div>
+            <p style={{marginBottom:'0.3em'}}>Imię i nazwisko oraz przydział godzin:</p>
+            <textarea style={{resize:'none',width:'100%',height:'9rem'}}
+              name="textAreaContent" spellCheck="false" value={this.state.textAreaContent}
+              ref={this.mainInput} onChange={this.inputChangeHandler}></textarea>
+          </div>
+          : 
+          <div>
+            <p className="block-mdm">Imię i nazwisko:</p>
+            <input className="block-lrg" type="text" name="title" autoComplete="on" required
+              ref={this.mainInput} value={this.state.title} onChange={this.inputChangeHandler} />
+            <br/>
+            <p className="block-mdm">Przydział godzin:</p>
+            <div className="block-lrg">
+              <input type="number" className="block-sml" min={0} max={99}
+                autoComplete="on" name="totalHours" required 
+                value={this.state.totalHours} onChange={this.inputChangeHandler} />
+            </div>
+          </div>
+        }
         <div className="btn-pnl">
-          <button type="submit">{this.editMode?
+          <button type="submit">{this.editMode ?
             <span><FiSave/>Zapisz</span> : <span><FiPlus/>Dodaj</span>
           }</button>
+          {!this.editMode && <button type="button" 
+            onClick={() => this.setState({multiple: !this.state.multiple})}>
+            {this.state.multiple ?
+              <span><MdPersonAdd/>Pojedynczo</span> : <span><MdGroupAdd/>Masowo</span>
+            }
+          </button>}
         </div>
       </form>
     );

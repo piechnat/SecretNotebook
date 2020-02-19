@@ -1,7 +1,7 @@
 import React from 'react';
 import {MdSettings} from 'react-icons/md';
 import {FaFileExport, FaFileImport, FaTrashAlt, FaRegCalendarMinus} from 'react-icons/fa';
-import {appNav, confirmDialog, setSystemFont} from './Utils';
+import {confirmDialog, setSystemFont} from './Utils';
 import appData from './Utils/AppData';
 import QuickSelect from './Utils/QuickSelect';
 
@@ -63,12 +63,11 @@ export default class Settings extends React.Component {
     });
   }
   importClickHandler = () => {
-    try {
-      appData.importFromJSON(this.state.textAreaContent);
+    if (appData.importFromJSON(this.state.textAreaContent)) {
       this.setState({...this.getSettingsState(), textAreaContent: ''}, 
         () => this.updateVisualSettings());
       confirmDialog('Poprawnie zaimportowano dane.', ['OK']);
-    } catch {
+    } else {
       confirmDialog('Błąd importowania! Niepoprawny format danych.', ['OK']);
     }
   }
@@ -94,7 +93,6 @@ export default class Settings extends React.Component {
     ).then((confirmed) => {
       if (confirmed) {
         appData.clearData();
-        appNav.reset();
         this.setState(this.getSettingsState(), () => this.updateVisualSettings());
       }
     });

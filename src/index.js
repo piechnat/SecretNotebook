@@ -67,7 +67,7 @@ class RootComponent extends React.Component {
         <div id="fixed-background"/>
         <div id="header-content-cover"/>
         <div id="header-wrapper">
-          <h1 id="header" onClick={appNav.goHome}><span>Secret Notebook</span></h1>
+          <h1 id="header" onClick={()=>appNav.goHome()}><span>Secret Notebook</span></h1>
         </div>
         <div id="content">
           <FlexibleHeight duration={this.state.noStretching?0:200} 

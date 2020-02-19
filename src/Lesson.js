@@ -78,7 +78,7 @@ export default class Lesson extends React.Component {
         } 
         <p className="block-mdm">Imię i nazwisko:</p>
         <input className="block-lrg" type="text" value={this.student.title} disabled />
-        {this.student.id&&<div>
+        {this.student.id>0&&<div>
           <p className="block-mdm">Data i godzina:</p>
           <DateTimeField className="block-lrg" name="time"
             value={this.state.time} onChange={this.dataChangeHandler} />
