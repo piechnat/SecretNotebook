@@ -69,6 +69,7 @@ class AppData {
     this._itemPrefix = 'SLO_';
     this._itemRegExp = new RegExp('^' + this._itemPrefix + '([0-9]+)$');
     this._nextId = parseInt(localStorage.getItem('nextId')) || 1;
+    this._sessData = {};
   }
   _getStudents() {
     const items = [];
@@ -243,6 +244,16 @@ class AppData {
       if (localStorage.hasOwnProperty(p)) total += ((localStorage[p].length + p.length) * 2);
     }
     return (total / 1024).toFixed(2);
+  }
+  sess(name, value) {
+    if (value === undefined) { // get
+      const res = this._sessData[name];
+      if (res !== null) this._sessData[name] = null;
+      return parseInt(res) || 0;
+    } else { // set
+      value = parseInt(value);
+      this._sessData[name] = value ? value : 0;
+    }
   }
 }
 

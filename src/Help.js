@@ -101,6 +101,10 @@ const Help = () => {
         Kliknięcie nazwy <b>Secret Notebook</b> w&nbsp;nagłówku 
         wywołuje powrót do widoku listy studentów.
       </p>
+      <p>
+        Na ikonie zeszytu wyświetlana jest liczba roboczych dni tygodnia 
+        (łącznie z&nbsp;dzisiejszym) pozostałych do końca semestru.
+      </p>
     </div>
   )
 } 

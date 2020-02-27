@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import {IoIosArrowDropleft, IoIosHelpCircleOutline, IoIosSettings} from 'react-icons/io';
 import * as serviceWorker from './serviceWorker';
-import {config, appNav, appScroll, confirmDialog, setSystemFont} from './Utils';
+import {config, appNav, appScroll, setSystemFont, workingDays} from './Utils';
+import {confirmDialog} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import FlexibleHeight from './Utils/FlexibleHeight';
 import FadeTransition from './Utils/FadeTransition';
@@ -67,7 +68,13 @@ class RootComponent extends React.Component {
         <div id="fixed-background"/>
         <div id="header-content-cover"/>
         <div id="header-wrapper">
-          <h1 id="header" onClick={()=>appNav.goHome()}><span>Secret Notebook</span></h1>
+          <h1 id="header" onClick={()=>appNav.goHome()}>
+            <span>Secret Notebook</span>
+            {workingDays && <span id="working-days">
+              {['ND', 'PN', 'WT', 'ŚR', 'CZ', 'PT', 'SB'][new Date().getDay()]}<br/>
+              {workingDays}
+            </span>}
+          </h1>
         </div>
         <div id="content">
           <FlexibleHeight duration={this.state.noStretching?0:200} 

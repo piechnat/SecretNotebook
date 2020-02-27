@@ -3,7 +3,8 @@ import {Link} from 'react-router-dom';
 import {FiArrowLeft} from 'react-icons/fi';
 import {MdSwapVert} from 'react-icons/md';
 import {FaUserEdit, FaUserPlus, FaUsers, FaRegCalendarPlus} from 'react-icons/fa';
-import {appNav, appScroll, toastNotification, MinutesToHours} from './Utils';
+import {appNav, appScroll, MinutesToHours} from './Utils';
+import {toastNotification} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import LessonLengthSelect from './Utils/LessonLengthSelect'
 import Swipe from  './Utils/Swipe';
@@ -13,8 +14,9 @@ export default class List extends React.Component {
   constructor(props) {
     super(props);
     this.root = document.getElementById('root-component');
-    this.state = {studentList: appData.getStudents(), lessonLength: [], expanded: 0, swapIdx: -1, 
-      changedItemId: parseInt(sessionStorage.getItem('changedItemId')) || 0};
+    this.state = {studentList: appData.getStudents(), 
+      lessonLength: [], expanded: 0, swapIdx: -1, changedItemId: appData.sess('changedItemId')};
+    appData.sess('changedItemKey'); // remove only
     for (let student of this.state.studentList) {
       this.state.lessonLength[student.id] = student.lessonLength || 45;
     }
@@ -28,7 +30,12 @@ export default class List extends React.Component {
   }
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.clickOutsideHandler);
-    sessionStorage.setItem('changedItemId', this.state.changedItemId);
+  }
+  clickOutsideHandler = (e) => {
+    const elm = this.listWrapper.current;
+    if (elm && this.root.contains(e.target) && !elm.contains(e.target)) {
+      this.setState({expanded: 0, swapIdx: -1});
+    }
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.message !== this.props.message) {
@@ -60,14 +67,7 @@ export default class List extends React.Component {
   lessonLengthChangeHandler = (d) => this.setState(state => {
     state.lessonLength.forEach((o, i, a) => { if (i === d.name) a[i] = d.value; });
     return {lessonLength: state.lessonLength};
-  }); 
-  clickOutsideHandler = (e) => {
-    const elm = this.listWrapper.current;
-    if (elm && this.root.contains(e.target) && 
-        !elm.contains(e.target) && e.target.tagName.toLowerCase() !== 'a') {
-      this.setState({expanded: 0, swapIdx: -1, changedItemId: 0});
-    }
-  }
+  });
   listItemClickHandler = (id, idx, e) => {
     if (this.state.swapIdx > -1) { // move item
       const state = {swapIdx: -1};
@@ -90,19 +90,9 @@ export default class List extends React.Component {
     } else if (e.target.getAttribute('name') === 'indicator') { // open menu
       setTimeout(() => this.expandMenu(id), 10);
     } else if (e.target.getAttribute('name') === 'title') { // open details
-      this.setState({changedItemId: id})
       appNav.push('/details/' + id);
       e.preventDefault();
     }
-  }
-  moveClickHandler = (id, idx, e) => {
-    e.preventDefault();
-    const state = {expanded: 0};
-    if (this.ownOrder) {
-      state.swapIdx = idx;
-      state.changedItemId = 0;
-    }
-    this.setState(state);
   }
   addClickHandler = (id, e) => {
     e.preventDefault();
@@ -163,13 +153,12 @@ export default class List extends React.Component {
                 >
                 <div key="indicator" name="indicator" className="indicator"><FiArrowLeft/></div>
                 <div key="menu" className={'menu'+menuState}>
-                  {this.ownOrder&&
-                    <Link to="#" onClick={(e)=>this.moveClickHandler(stdnt.id,index,e)}>
-                      <MdSwapVert/>
-                    </Link>
-                  }
-                  <Link to={'/student/'+stdnt.id} 
-                    onClick={()=>this.setState({changedItemId:stdnt.id})}><FaUserEdit/></Link>
+                  {this.ownOrder && <Link to="#" onClick={(e) => {
+                      e.preventDefault();
+                      this.setState({expanded: 0, swapIdx: index});
+                    }}><MdSwapVert/>
+                  </Link>}
+                  <Link to={'/student/'+stdnt.id}><FaUserEdit/></Link>
                   <LessonLengthSelect 
                     className="small-select" 
                     name={stdnt.id} 

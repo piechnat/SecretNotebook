@@ -171,20 +171,13 @@ a:active svg {
   z-index: 1;
 }
 #header {
+  position: relative;
   box-sizing: border-box;
   max-width: 40rem;
   margin: 0 auto;
   border: 0;
-  font-weight: 700;
-  color: $contBgColor;
-  text-shadow:
-    -1px -1px 0 $bgColor1Light, 
-    1px -1px 0 $bgColor1Light, 
-    -1px  1px 0 $bgColor1Light, 
-    1px  1px 0 $bgColor1Light;
-  line-height: 3.1rem;
   font-size: 1.8em;
-  text-align: center;
+  color: $contBgColor;
   background: linear-gradient(to right, $bgColor2, $bgColor1Light);
   transition: 0.3s;
   box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.4);
@@ -193,6 +186,33 @@ a:active svg {
     display: block;
     padding: 0.06em 0 0.06em 0;
     background: url("./Assets/icon.png") no-repeat 0.4rem 0.4rem / 2.5rem;
+    font-weight: 700;
+    text-shadow:
+    -1px -1px 0 $bgColor1Light, 
+    1px -1px 0 $bgColor1Light, 
+    -1px  1px 0 $bgColor1Light, 
+    1px  1px 0 $bgColor1Light;
+    line-height: 3.1rem;
+    text-align: center;
+  }
+  #working-days {
+    position: absolute;
+    margin: 0;
+    background-color: $bgColor1Light;
+    width: 1.3rem;
+    padding: 0.06rem;
+    top: 0.6rem; 
+    left: 0.8rem;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 0.94rem;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+  }
+  #working-days:first-line {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 300;
   }
   &:active {
     transition: none;
@@ -201,6 +221,7 @@ a:active svg {
       0 0 0 10rem rgba(0, 0, 0, 0.2) inset;
     -webkit-tap-highlight-color: transparent;
   }
+
 }
 #content {
   position: relative;

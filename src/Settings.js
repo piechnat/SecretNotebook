@@ -1,7 +1,8 @@
 import React from 'react';
 import {MdSettings} from 'react-icons/md';
 import {FaFileExport, FaFileImport, FaTrashAlt, FaRegCalendarMinus} from 'react-icons/fa';
-import {confirmDialog, setSystemFont} from './Utils';
+import {setSystemFont} from './Utils';
+import {confirmDialog} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import QuickSelect from './Utils/QuickSelect';
 
@@ -25,7 +26,7 @@ export default class Settings extends React.Component {
       dataSize: appData.getSize(),
     };
   }
-  updateVisualSettings() {
+  updateVisualSettings = () => {
     setSystemFont(this.state.systemFont);
     this.props.sendMessage('noStretching', this.state.noStretching);
     this.props.sendMessage('scrollMode', this.state.smoothScroll ? 'smooth' : 'auto');
@@ -64,8 +65,7 @@ export default class Settings extends React.Component {
   }
   importClickHandler = () => {
     if (appData.importFromJSON(this.state.textAreaContent)) {
-      this.setState({...this.getSettingsState(), textAreaContent: ''}, 
-        () => this.updateVisualSettings());
+      this.setState({...this.getSettingsState(), textAreaContent: ''}, this.updateVisualSettings);
       confirmDialog('Poprawnie zaimportowano dane.', ['OK']);
     } else {
       confirmDialog('Błąd importowania! Niepoprawny format danych.', ['OK']);
@@ -78,7 +78,7 @@ export default class Settings extends React.Component {
     });
   }
   clearLessonsClickHandler = () => {
-    confirmDialog('Uwaga!!! Tej operacji nie można cofnąć! ' +
+    confirmDialog('Uwaga! Tej operacji nie można cofnąć! ' +
       'Czy potwierdzasz usunięcie zajęć wszystkich studentów?'
     ).then((confirmed) => {
       if (confirmed) {
@@ -88,12 +88,12 @@ export default class Settings extends React.Component {
     });
   }
   clearDataClickHandler = () => {
-    confirmDialog('Uwaga!!! Tej operacji nie można cofnąć! ' +
+    confirmDialog('Uwaga! Tej operacji nie można cofnąć! ' +
       'Czy potwierdzasz usunięcie wszystkich danych aplikacji?'
     ).then((confirmed) => {
       if (confirmed) {
         appData.clearData();
-        this.setState(this.getSettingsState(), () => this.updateVisualSettings());
+        this.setState(this.getSettingsState(), this.updateVisualSettings);
       }
     });
   }

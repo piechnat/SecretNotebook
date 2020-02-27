@@ -2,7 +2,8 @@ import React from 'react';
 import {FiSave, FiPlus} from 'react-icons/fi';
 import {MdPersonAdd, MdGroupAdd} from 'react-icons/md';
 import {FaUserEdit, FaUserPlus, FaTrashAlt} from 'react-icons/fa';
-import {appNav, appScroll, toastNotification, confirmDialog} from './Utils';
+import {appNav, appScroll} from './Utils';
+import {toastNotification, confirmDialog} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 
 export default class Student extends React.Component {
@@ -12,6 +13,7 @@ export default class Student extends React.Component {
     if (this.student.id) {
       this.editMode = true;
       this.state = {title: this.student.title, totalHours: this.student.totalHours}; 
+      appData.sess('changedItemId', this.student.id);
     } else {
       this.editMode = false;
       this.state = {title: '', totalHours: appData.totalHours};
@@ -60,7 +62,7 @@ export default class Student extends React.Component {
       toastNotification(msg + ' studenta – ' + rec.title);
     }
     if (res) {
-      sessionStorage.setItem('changedItemId', res.id);
+      appData.sess('changedItemId', res.id);
       appScroll.unlockForElement();
       appNav.goBack();
     }
@@ -96,8 +98,8 @@ export default class Student extends React.Component {
         }
         {this.state.multiple ?
           <div>
-            <p style={{marginBottom:'0.3em'}}>Imię i nazwisko oraz przydział godzin:</p>
-            <textarea style={{resize:'none',width:'100%',height:'9rem'}}
+            <p style={{marginBottom:'0.3em'}}>Student i przydział godzin w jednym wierszu:</p>
+            <textarea style={{resize:'none',width:'100%',height:'7.3rem'}}
               name="textAreaContent" spellCheck="false" value={this.state.textAreaContent}
               ref={this.mainInput} onChange={this.inputChangeHandler}></textarea>
           </div>
@@ -119,7 +121,7 @@ export default class Student extends React.Component {
           <button type="submit">{this.editMode ?
             <span><FiSave/>Zapisz</span> : <span><FiPlus/>Dodaj</span>
           }</button>
-          {!this.editMode && <button type="button" 
+          {!this.editMode && <button type="button"
             onClick={() => this.setState({multiple: !this.state.multiple})}>
             {this.state.multiple ?
               <span><MdPersonAdd/>Pojedynczo</span> : <span><MdGroupAdd/>Masowo</span>

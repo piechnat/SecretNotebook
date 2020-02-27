@@ -1,7 +1,8 @@
 import React from 'react';
 import {FiSave, FiPlus} from 'react-icons/fi';
 import {FaRegCalendarPlus, FaEdit, FaTrashAlt} from 'react-icons/fa';
-import {appNav, appScroll, toastNotification} from './Utils';
+import {appNav, appScroll} from './Utils';
+import {toastNotification} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import DateTimeField, {dateFmt} from './Utils/DateTimeField';
 import LessonLengthSelect from './Utils/LessonLengthSelect';
@@ -18,6 +19,7 @@ export default class Lesson extends React.Component {
     if (this.student.id && lesson) {
       this.editMode = true;
       Object.assign(this.state, {time: lesson.time, length: lesson.length});
+      appData.sess('changedItemKey', lesson.key);
     } else if (this.student.id) {
       this.state.length = this.student.lessonLength || 45;
     } 
@@ -33,7 +35,7 @@ export default class Lesson extends React.Component {
     } 
     const res = appData.setStudent(rec).lessons[0];
     toastNotification('Lp. ' + (res.index+1) + ' – ' + msg + ' lekcję');
-    sessionStorage.setItem('changedItemKey', res.key);
+    appData.sess('changedItemKey', res.key);
     appScroll.unlockForElement();
     appNav.goBack();
   }
