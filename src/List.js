@@ -108,16 +108,8 @@ export default class List extends React.Component {
       </p>
     </div>);
     const res = appData.setStudent(rec).lessons[0];
-    toastNotification(msg, 5000, ['Cofnij']).then((clicked) => {
-      if (clicked) {
-        appData.removeStudent(id, res.key);
-        toastNotification('Cofnięto dodanie lekcji – ' + stdnt.title);
-        if (appNav.pathMatch('/list$')) {
-          this.updateStudentList(id); 
-        } else if (appNav.pathMatch('/details/'+id+'$')) { // if user has opened student details
-          this.props.sendMessage('details', {action: 'update', key: res.key});
-        }
-      }
+    toastNotification(msg, 5000, ['Otwórz']).then((clicked) => {
+      if (clicked) appNav.push('/lesson/'+ id +'/'+ res.key);
     });
     this.setState({expanded: 0});
     this.updateStudentList(id);

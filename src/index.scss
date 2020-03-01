@@ -79,6 +79,13 @@ select, input, textarea {
   box-shadow: 0 0 0.3rem 0.05rem rgba(85,85,85,0.2);
   box-sizing: border-box;
 }
+label {
+  font-size: 1.1em;
+  font-weight: var(--main-light-weight);
+  padding: 0.4em 0.5em;
+  border-radius: 0.3rem;
+  background-color: #f0f0f2;
+}
 .frm select, .frm input, .frm button, .frm textarea {
   margin: 0 1rem 1rem 0;
 }
@@ -454,6 +461,11 @@ table.lesson-list {
         -webkit-tap-highlight-color: transparent;
       }
     }
+    tr.absent td:nth-child(2) {
+      text-decoration: line-through;
+      color: #fff;
+    }
+    tr.absent * { color: #777; }
   }
   thead th {
     font-weight: var(--main-medium-weight);

@@ -102,7 +102,7 @@ const Help = () => {
         wywołuje powrót do widoku listy studentów.
       </p>
       <p>
-        Na ikonie zeszytu wyświetlana jest liczba roboczych dni tygodnia 
+        Na ikonie aplikacji wyświetlana jest liczba roboczych dni tygodnia 
         (łącznie z&nbsp;dzisiejszym) pozostałych do końca semestru.
       </p>
     </div>

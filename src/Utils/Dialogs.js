@@ -62,8 +62,7 @@ export function toastNotification(message, duration, button) {
   });
 }
   
-export function confirmDialog(message, buttons) {
-  if (buttons === undefined) buttons = ['OK', 'Anuluj'];
+export function confirmDialog(message, buttons = ['OK', 'Anuluj']) {
   return new Promise((resolve) => {
     const container = document.createElement('div'), animTime = 200;
     document.body.appendChild(container);

@@ -19,7 +19,7 @@ function validateRecord(rec) {
   if ('lessons' in rec) {
     if (!Array.isArray(rec.lessons)) throw new Error('Lessons is not an array!');
     for (let item of rec.lessons) {
-      validateProperties(item, {key: 'number', time: 'number', length: 'number'});
+      validateProperties(item, {key: 'number', time: 'number', length: 'number', absent: 'number'});
     }
   }
 }

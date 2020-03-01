@@ -131,10 +131,20 @@ ReactDOM.render(
   document.getElementById('root-component')
 );
 
-serviceWorker.register({onUpdate: () => {
+serviceWorker.register({onUpdate: (registration) => {
   confirmDialog(
-    'Uruchom aplikację ponownie, aby zaktualizować do nowszej wersji.', ['OK']
-  ).then(() => {
-    appNav.goHome();
+    'Uruchom aplikację ponownie, aby zaktualizować do nowszej wersji.'
+  ).then((confirmed) => {
+    if (confirmed) {
+      document.documentElement.classList.remove('document-ready');
+      const forceUpdate = () => 
+        registration.unregister().finally(() => window.location.reload(true));
+      if (appNav.deltaHome) {
+        appNav.history.listen(forceUpdate);
+        appNav.history.go(appNav.deltaHome);
+      } else {
+        forceUpdate(); 
+      }
+    }
   });
 }});

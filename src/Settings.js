@@ -125,9 +125,11 @@ export default class Settings extends React.Component {
               <option value="totalHours">Przydział godzin</option>
             </QuickSelect>
             <p>
-              <input type="checkbox" name="studentsReverse" id="studentsReverse" 
-                checked={parseInt(this.state.studentsReverse)} onChange={this.inputChangeHandler} />
-              <label htmlFor="studentsReverse">Odwrócony porządek</label>
+              <label htmlFor="studentsReverse">
+                <input type="checkbox" checked={parseInt(this.state.studentsReverse)} 
+                  name="studentsReverse" id="studentsReverse" onChange={this.inputChangeHandler} />
+                Odwrócony porządek
+              </label>
             </p>
           </div>
         </div>
@@ -136,32 +138,42 @@ export default class Settings extends React.Component {
           <div>
             <input type="text" value="Data i godzina" disabled />
             <p>
-              <input type="checkbox" name="lessonsReverse" id="lessonsReverse" 
-                checked={this.state.lessonsReverse} onChange={this.inputChangeHandler} />
-              <label htmlFor="lessonsReverse">Odwrócony porządek</label>
+              <label htmlFor="lessonsReverse">
+                <input type="checkbox" name="lessonsReverse" id="lessonsReverse" 
+                  checked={this.state.lessonsReverse} onChange={this.inputChangeHandler} /> 
+                Odwrócony porządek
+              </label>
             </p>
           </div>
         </div>
         <h3>Wygląd</h3>
         <p className="block-lrg">
-          <input type="checkbox" name="systemFont" id="systemFont" 
-            checked={this.state.systemFont} onChange={this.inputChangeHandler} />
-          <label htmlFor="systemFont">Czcionka systemowa</label>
+          <label htmlFor="systemFont">
+            <input type="checkbox" name="systemFont" id="systemFont" 
+              checked={this.state.systemFont} onChange={this.inputChangeHandler} />
+            Czcionka systemowa
+          </label>
         </p>
         <p className="block-lrg">
-          <input type="checkbox" name="noStretching" id="noStretching" 
-            checked={this.state.noStretching} onChange={this.inputChangeHandler} />
-          <label htmlFor="noStretching">Brak animacji rozciągania</label>
+          <label htmlFor="noStretching">
+            <input type="checkbox" name="noStretching" id="noStretching" 
+              checked={this.state.noStretching} onChange={this.inputChangeHandler} />
+            Brak animacji rozciągania
+          </label>
         </p>
         <p className="block-lrg">
-          <input type="checkbox" name="smoothScroll" id="smoothScroll" 
-            checked={this.state.smoothScroll} onChange={this.inputChangeHandler} />
-          <label htmlFor="smoothScroll">Płynne przewijanie (Android)</label>
+          <label htmlFor="smoothScroll">
+            <input type="checkbox" name="smoothScroll" id="smoothScroll" 
+              checked={this.state.smoothScroll} onChange={this.inputChangeHandler} />
+            Płynne przewijanie (Android)
+          </label>
         </p>
         <p className="block-lrg">
-          <input type="checkbox" name="fixedNavBar" id="fixedNavBar" 
-            checked={this.state.fixedNavBar} onChange={this.inputChangeHandler} />
-          <label htmlFor="fixedNavBar">Przyklejony pasek nawigacji</label>
+          <label htmlFor="fixedNavBar">
+            <input type="checkbox" name="fixedNavBar" id="fixedNavBar" 
+              checked={this.state.fixedNavBar} onChange={this.inputChangeHandler} />
+            Przyklejony pasek nawigacji
+          </label>
         </p>
         <h3>Eksport i import danych</h3>
         <textarea style={{resize:'none',width:'100%',height:'14rem'}} 

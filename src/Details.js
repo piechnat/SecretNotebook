@@ -81,7 +81,8 @@ export default class Details extends React.Component {
           </thead>
           <tbody>
           {this.order(student.lessons.map((item, index) => 
-            <tr className={this.changedItemKey===item.key?'changed-item':''} key={index} 
+            <tr className={(this.changedItemKey===item.key?'changed-item ':'')+
+                (item.absent?'absent':'')} key={index} 
               onClick={()=>appNav.push('/lesson/'+ student.id +'/'+ item.key)}>
               <td>{index+1}.</td>
               <td>{dateFmt(item.time, 'T, <mark>DD. N RRRR</mark>, GG:II', true)}</td>

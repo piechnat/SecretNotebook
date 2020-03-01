@@ -13,13 +13,19 @@ export default class Lesson extends React.Component {
     this.student = appData.getStudent(props.match.params.id);
     this.lessonKey = parseInt(props.match.params.key) || 0;
     this.editMode = false;
+    this.addBtn = true;
     this.submitType = 'add';
-    this.state = {time: Date.now(), length: 45};
+    this.state = {time: Date.now(), length: 45, absent: false};
     let lesson = this.student.lessons.find(o => o.key === this.lessonKey);
     if (this.student.id && lesson) {
       this.editMode = true;
-      Object.assign(this.state, {time: lesson.time, length: lesson.length});
+      Object.assign(this.state, 
+        {time: lesson.time, length: lesson.length, absent: lesson.absent === 1});
       appData.sess('changedItemKey', lesson.key);
+      if (!appData.sess('changedItemId')) { // call is not from the Details
+        this.addBtn =  false;
+        appData.sess('changedItemId', this.student.id);
+      }
     } else if (this.student.id) {
       this.state.length = this.student.lessonLength || 45;
     } 
@@ -27,8 +33,8 @@ export default class Lesson extends React.Component {
   dataChangeHandler = (data) => this.setState({[data.name]: data.value});
   formSubmitHandler = (e) => {
     e.preventDefault();
-    let msg = 'Dodano', rec = {id: this.student.id, lessonLength: this.state.length, 
-      lessons: [{time: this.state.time, length: this.state.length}]};
+    let msg = 'Dodano', rec = {id: this.student.id, lessonLength: this.state.length, lessons: 
+      [{time: this.state.time, length: this.state.length, absent: this.state.absent ? 1 : 0}]};
     if (this.editMode && this.submitType === 'edit') {
       rec.lessons[0].key = this.lessonKey;
       msg = 'Zapisano';
@@ -80,22 +86,27 @@ export default class Lesson extends React.Component {
         } 
         <p className="block-mdm">Imię i nazwisko:</p>
         <input className="block-lrg" type="text" value={this.student.title} disabled />
-        {this.student.id>0&&<div>
+        {this.student.id > 0 && <div>
           <p className="block-mdm">Data i godzina:</p>
           <DateTimeField className="block-lrg" name="time"
             value={this.state.time} onChange={this.dataChangeHandler} />
           <br/>
           <p className="block-mdm">Długość zajęć:</p>
           <div className="block-lrg">
-            <LessonLengthSelect className="block-sml" required name="length"
+            <LessonLengthSelect className="block-sml" name="length" required 
               value={this.state.length} onChange={this.dataChangeHandler}/>
+            <label htmlFor="absent">
+              <input type="checkbox" name="absent" id="absent" checked={this.state.absent}
+                onChange={({target: t}) => this.setState({[t.name]: t.checked})} />
+              absencja
+            </label>
           </div>
           <br/>
           <div className="btn-pnl">
-            {this.editMode&&<button type="submit" 
+            {this.editMode && <button type="submit" 
               onClick={()=>this.submitType='edit'}><FiSave/>Zapisz</button>}
-            <button type="submit" 
-              onClick={()=>this.submitType='add'}><FiPlus/>Dodaj</button>
+            {this.addBtn && <button type="submit" 
+              onClick={()=>this.submitType='add'}><FiPlus/>Dodaj</button>}
           </div>
         </div>}
       </form>
