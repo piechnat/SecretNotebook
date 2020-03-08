@@ -9,23 +9,32 @@ export default class Swipe extends React.Component {
     super(props);
     this.state = {active: ''};
     this.lockMouseEvents = false; 
+    this.touchStart = this.touchStart.bind(this);
+    this.mouseDown = this.mouseDown.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.mouseMove = this.mouseMove.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+    this.mouseUp = this.mouseUp.bind(this);
+    this.deactivate = this.deactivate.bind(this);
   }
-  touchStart = (e) => {
+  touchStart(e) {
     this.lockMouseEvents = true;
     this.startX = this.endX = e.touches[0].clientX;
     this.setState({active: ' active'});
   }
-  mouseDown = (e) => {
+  mouseDown(e) {
     if (this.lockMouseEvents) return;
     this.startX = this.endX = e.clientX;
     this.setState({active: ' active'});
   }
-  touchMove = (e) => this.endX = e.touches[0].clientX;
-  mouseMove = (e) => {
+  touchMove(e) {
+    this.endX = e.touches[0].clientX;
+  }
+  mouseMove(e) {
     if (this.lockMouseEvents) return;
     this.endX = e.clientX;
   }
-  touchEnd = (e) => {
+  touchEnd(e) {
     if (this.props.onLeft && (this.endX < (this.startX - 50))) {
       this.props.onLeft(e);
     } else if (this.props.onRight && (this.endX > (this.startX + 50))) {
@@ -35,11 +44,13 @@ export default class Swipe extends React.Component {
     }
     this.deactivate();
   }
-  mouseUp = (e) => {
+  mouseUp(e) {
     if (!this.lockMouseEvents) this.touchEnd(e);
     this.lockMouseEvents = false;
   }
-  deactivate = () => this.setState({active: ''});
+  deactivate() {
+    this.setState({active: ''});
+  }
   render() {
     return (
       <div style={this.props.style}

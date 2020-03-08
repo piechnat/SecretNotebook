@@ -35,15 +35,17 @@ class DateTimeField extends React.Component {
     value = parseInt(value);
     let d = new Date(isNaN(value) ? Date.now() : value);
     this.state = {date: dateFmt(d, 'RRRR-MM-DD'), time: dateFmt(d, 'GG:II')};
+    this.inputChange = this.inputChange.bind(this);
+    this.dateChange = this.dateChange.bind(this);
   }
   componentDidMount() {
     this.dateChange();
   }
-  inputChange = (event) => {
-    this.setState({[event.target.name]: event.target.value});
+  inputChange(e) {
+    this.setState({[e.target.name]: e.target.value});
     this.dateChange();
   }
-  dateChange = () => {
+  dateChange() {
     if (this.dateRef.current.checkValidity() && this.timeRef.current.checkValidity() ) {
       this.dataObject.value = Date.parse(this.dateRef.current.value + 'T' + this.timeRef.current.value);
       this.props.onChange(this.dataObject);

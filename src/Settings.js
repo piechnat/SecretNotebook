@@ -16,6 +16,7 @@ export default class Settings extends React.Component {
   getSettingsState() {
     const sp = appData.sortParams.split(',');
     return {
+      countPresent: appData.countPresent,
       studentsReverse: sp[0], 
       studentsSortBy: sp[1] + (sp[2] ? ',' + sp[2] : ''), 
       lessonsReverse: appData.lessonsReverse, 
@@ -37,6 +38,9 @@ export default class Settings extends React.Component {
     const value = e.target.type === "checkbox" ? (e.target.checked ? 1 : 0) : e.target.value;
     this.setState({[name]: value}, () => {
       switch (name) {
+        case 'countPresent':
+          appData.countPresent = this.state.countPresent;
+          break;
         case 'studentsReverse': case'studentsSortBy':
           appData.sortParams = this.state.studentsReverse + ',' + this.state.studentsSortBy;
           break;
@@ -146,6 +150,14 @@ export default class Settings extends React.Component {
             </p>
           </div>
         </div>
+        <h3>Działanie</h3>
+        <p>
+          <label htmlFor="countPresent">
+            <input type="checkbox" name="countPresent" id="countPresent" 
+              checked={this.state.countPresent} onChange={this.inputChangeHandler} /> 
+            Nie uwzględniaj absencji przy sumowaniu ukończonych godzin
+          </label>
+        </p>
         <h3>Wygląd</h3>
         <p className="block-lrg">
           <label htmlFor="systemFont">

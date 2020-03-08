@@ -13,11 +13,12 @@ export default class QuickSelect extends React.Component {
     this.state = {value: '', size: undefined};
     this.defIndex = -1;
     this.dataObject = {name: props.name};
+    this.inputClick = this.inputClick.bind(this);
   }
   componentDidMount() {
     this.componentDidUpdate({}, {});
   }
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.children !== prevProps.children) {
       this.valueList = [];
       this.textList = [];
@@ -36,7 +37,7 @@ export default class QuickSelect extends React.Component {
       this.setState({value: this.textList[Math.max(0, this.defIndex)]});
     }
   }
-  inputClick = (e) => {
+  inputClick() {
     selectDialog(this.textList, this.defIndex).then((result) => {
       if (result !== this.defIndex) {
         this.defIndex = result;

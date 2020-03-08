@@ -80,6 +80,7 @@ select, input, textarea {
   box-sizing: border-box;
 }
 label {
+  display: inline-block;
   font-size: 1.1em;
   font-weight: var(--main-light-weight);
   padding: 0.4em 0.5em;
@@ -89,7 +90,7 @@ label {
 .frm select, .frm input, .frm button, .frm textarea {
   margin: 0 1rem 1rem 0;
 }
-.frm input[type=checkbox] { margin-right: 0.5em; }
+label input[type=checkbox] { margin: 0 0.5em 0 0; }
 select:focus, input:focus, textarea:focus {
   border: 1px solid #888;
   transform: translateY(-0.05rem) translateX(-0.05rem);

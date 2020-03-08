@@ -70,6 +70,7 @@ class AppData {
     this._itemRegExp = new RegExp('^' + this._itemPrefix + '([0-9]+)$');
     this._nextId = parseInt(localStorage.getItem('nextId')) || 1;
     this._sessData = {};
+    this._countPresent = parseInt(localStorage.getItem('countPresent')) || 0; 
   }
   _getStudents() {
     const items = [];
@@ -98,7 +99,10 @@ class AppData {
     if (Array.isArray(student.lessons)) {
       student.lessons.sort(dynamicSort(0, 'time'));
       student.completed = 0;
-      for (let item of student.lessons) student.completed += item.length;
+      const countFunc = this.countPresent ? 
+        lesson => { if (!lesson.absent) student.completed += lesson.length; } : 
+        lesson => { student.completed += lesson.length; }
+      student.lessons.forEach(countFunc);
     }
   }
   get totalHours() { return parseInt(localStorage.getItem('totalHours')) || 12; }
@@ -114,10 +118,19 @@ class AppData {
   set smoothScroll(v) { localStorage.setItem('smthScrl', v ? 1 : 0); }
   get fixedNavigationBar() { return parseInt(localStorage.getItem('fixedNavBar')) || 0; }
   set fixedNavigationBar(v) { localStorage.setItem('fixedNavBar', v ? 1 : 0); }
+  get countPresent() { return this._countPresent; }
+  set countPresent(v) { 
+    v = v ? 1 : 0;
+    if (v !== this._countPresent) {
+      this._countPresent = v;
+      localStorage.setItem('countPresent', v); 
+      this.updateLessons();
+    }
+  }
   importFromJSON(jsonStr) {
     try {
       let data = JSON.parse(jsonStr);
-      const allowedNames = ['nextId', 'totalHours', 
+      const allowedNames = ['nextId', 'totalHours', 'countPresent',
         'lsnRvrs', 'sortParams', 'sysFont', 'noStretching', 'smthScrl', 'fixedNavBar'];
       Object.keys(data).forEach((key) => {
         if (key.match(this._itemRegExp) || (allowedNames.indexOf(key) > -1)) {
@@ -141,6 +154,7 @@ class AppData {
       localStorage.setItem('sortParams', '0,order');
       tmp = 'id';
     }
+    this._countPresent = parseInt(localStorage.getItem('countPresent')) || 0;
     this._getStudents().sort(dynamicSort(0, tmp)).forEach((student, index) => {
       validateRecord(student);
       student.order = (index + 1) * 1000000;
@@ -153,6 +167,12 @@ class AppData {
   updateOrder() {
     this._getStudents().sort(dynamicSort(0, 'order')).forEach((student, index) => {
       student.order = (index + 1) * 1000000;
+      localStorage.setItem(this._itemPrefix + student.id, JSON.stringify(student));
+    });
+  }
+  updateLessons() {
+    this._getStudents().forEach((student) => {
+      this._updateCompletedLessons(student);
       localStorage.setItem(this._itemPrefix + student.id, JSON.stringify(student));
     });
   }
@@ -234,6 +254,7 @@ class AppData {
   }
   clearData() {
     this._nextId = 1;
+    this._countPresent = 0;
     const version = localStorage.getItem('version');
     localStorage.clear();
     localStorage.setItem('version', version);

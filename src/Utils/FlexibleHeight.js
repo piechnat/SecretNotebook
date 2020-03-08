@@ -16,11 +16,13 @@ class FlexibleHeight extends React.Component {
     this.content = React.createRef();
     this.height = 0;
     this._ahTmOut = null;
+    this.resizeEnd = this.resizeEnd.bind(this);
     this._adjustHeight = this._adjustHeight.bind(this);
     this.adjustHeight = this.adjustHeight.bind(this);
     this.adjustHeightDelayed = this.adjustHeightDelayed.bind(this);
+    this.setEnabled = this.setEnabled.bind(this);
   }
-  resizeEnd = (e) => {
+  resizeEnd(e) {
     if (this.props.onResizeEnd && e.target === this.wrapper.current) {
       this.props.onResizeEnd(this.height);
     }

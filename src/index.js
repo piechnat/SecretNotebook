@@ -8,6 +8,7 @@ import {confirmDialog} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import FlexibleHeight from './Utils/FlexibleHeight';
 import FadeTransition from './Utils/FadeTransition';
+import {dateFmt} from './Utils/DateTimeField';
 import List from './List';
 import Student from './Student';
 import Details from './Details';
@@ -31,8 +32,13 @@ class RootComponent extends React.Component {
     };
   }
   componentDidMount() {
-    if (appNav.pwaMode) window.gtag('event', 'pwa_start');
-    if (!appData.versionEquals(config.version)) this.props.history.push('/help'); 
+    if (appNav.pwaMode) {
+      window.gtag('event', 'pwa_start', {time: dateFmt(new Date(), 'MM-DD GG:II')});
+    }
+    if (!appData.versionEquals(config.version)) {
+      window.gtag('event', 'pwa_update', {version: config.version});
+      this.props.history.push('/help'); 
+    }
     appScroll.onBeforeScrolling = () => {
       document.documentElement.style.scrollBehavior = !appScroll.isUnlockedForElement() && 
         (appNav.scrollMemory === 0 || this.state.noStretching) ? 'auto' : this.state.scrollMode;
@@ -59,10 +65,8 @@ class RootComponent extends React.Component {
   }
   sendMessage = (name, state) => this.setState({[name]: state});
   render() {
-    let location = this.props.location, pth = location.pathname.substr(1);
-    let { p1 = 'x', p2 = 'x' } = this.props.match.params;
-    let msgProps = (o, n) => 
-      Object.assign(o, {sendMessage: this.sendMessage, message: this.state[n]});
+    const location = this.props.location, pth = location.pathname.substr(1);
+    const msgProps = (o, n) => ({...o, sendMessage: this.sendMessage, message: this.state[n]});
     return (
       <div id="main-warpper">
         <div id="fixed-background"/>
@@ -79,7 +83,7 @@ class RootComponent extends React.Component {
         <div id="content">
           <FlexibleHeight duration={this.state.noStretching?0:200} 
             onContentChange={this.contentChangeHandler} onResizeEnd={this.resizeEndHandler}>
-            <FadeTransition id={p1+p2} className="fade-transition" duration={300}>
+            <FadeTransition id={location.key||''} duration={300} className="fade-transition">
               <Switch location={location}>
                 <Route path="/list" render={(p)=><List {...msgProps(p,'list')}/>}/>
                 <Route path="/student/:id?" render={(p)=><Student {...msgProps(p)}/>}/>
@@ -125,8 +129,8 @@ const NotFound = (props) => (
 );
 
 ReactDOM.render(
-  <BrowserRouter basename={config.basePath}>   
-    <Route path="/:p1?/:p2?" component={RootComponent}/>
+  <BrowserRouter basename={config.basePath}>
+    <Route component={RootComponent}/>
   </BrowserRouter>, 
   document.getElementById('root-component')
 );
@@ -137,14 +141,7 @@ serviceWorker.register({onUpdate: (registration) => {
   ).then((confirmed) => {
     if (confirmed) {
       document.documentElement.classList.remove('document-ready');
-      const forceUpdate = () => 
-        registration.unregister().finally(() => window.location.reload(true));
-      if (appNav.deltaHome) {
-        appNav.history.listen(forceUpdate);
-        appNav.history.go(appNav.deltaHome);
-      } else {
-        forceUpdate(); 
-      }
+      registration.unregister().finally(() => appNav.reload());
     }
   });
 }});

@@ -24,22 +24,22 @@ export function setSystemFont(value) {
 }
 
 class AppNav {
-  history = null;
-  deltaHome = null;
-  delay = 10;
+  _unlisten = () => {};
+  _history = null;
+  _deltaHome = null;
+  _delay = 10;
   scrollMemory = 0;
   onScrollMemoryChange = null;
   androidOS = /android/i.test(navigator.userAgent);
   pwaMode = window.location.search === '?PWASTART';
-  reset() {}
   init(hstr) {
-    if (!hstr || this.history) return false;
-    this.history = hstr;
+    if (!hstr || this._history) return false;
+    this._history = hstr;
     if (!hstr.location.key) hstr.replace(
       hstr.location.pathname + hstr.location.search + hstr.location.hash
     );
     let currKey, homeKey, hstrList, hstrPos, scrollList;
-    this.reset = () => {homeKey = ''; hstrList = [currKey]; hstrPos = 0; scrollList = {}};
+    const reset = () => {homeKey = ''; hstrList = [currKey]; hstrPos = 0; scrollList = {}};
     let onLocationChange = (location, action) => {
       currKey = location.key || location.pathname;
       if (action === 'LOAD') try {
@@ -48,7 +48,7 @@ class AppNav {
         scrollList = JSON.parse(sessionStorage.getItem('scrollList'));
         hstrPos = hstrList.indexOf(currKey);
         if (hstrList.indexOf(homeKey) < 0 || hstrPos < 0) throw Error();
-      } catch { this.reset(); }
+      } catch { reset(); }
       scrollList[hstrList[hstrPos]] = window.pageYOffset;
       if (action === 'PUSH') {
         if (++hstrPos < hstrList.length) {
@@ -64,19 +64,19 @@ class AppNav {
       }
       if (action === 'POP') {
         hstrPos = hstrList.indexOf(currKey);
-        if (hstrPos < 0) this.reset();
+        if (hstrPos < 0) reset();
       }
       if (homeKey === '' && location.pathname === '/list') homeKey = currKey;
-      this.deltaHome = (homeKey === '') ? null : hstrList.indexOf(homeKey) - hstrPos;
+      this._deltaHome = (homeKey === '') ? null : hstrList.indexOf(homeKey) - hstrPos;
       // Double back press to exit on Android
       if (this.androidOS && location.search === '?PWASTART') {
         homeKey = '';
         this.scrollMemory = -1;
         if (action === 'POP') {
           toastNotification(<span>Naciśnij ponownie <em>Wstecz</em>, aby zamknąć.</span>, 800);
-          setTimeout(() => this.history.push(location.pathname), 1200);
+          setTimeout(() => this._history.push(location.pathname), 1200);
         } else { // if first time here
-          this.history.push(location.pathname); // without search
+          this._history.push(location.pathname); // without search
         }
       } else {
         this.scrollMemory = scrollList[hstrList[hstrPos]] || 0;
@@ -95,34 +95,44 @@ class AppNav {
       sessionStorage.setItem('hstrList', JSON.stringify(hstrList));
       sessionStorage.setItem('scrollList', JSON.stringify(scrollList));
     });
-    hstr.listen(onLocationChange);
+    this._unlisten = hstr.listen(onLocationChange);
     onLocationChange(hstr.location, 'LOAD');
     return true;
   }
+  reload = () => {
+    const rld = () => window.location.reload(true);
+    let delta = this._deltaHome || 0;
+    if (this._deltaHome !== null && this.pwaMode && this.androidOS) delta--;
+    if (delta === 0) rld(); else {
+      this._unlisten();
+      this._history.listen(rld);
+      this._history.go(delta);
+    } 
+  }
   goHome = () => {
-    if (!this.history) return;
-    if (this.deltaHome) {
-      setTimeout(() => this.history.go(this.deltaHome), this.delay); 
+    if (!this._history) return;
+    if (this._deltaHome) {
+      setTimeout(() => this._history.go(this._deltaHome), this._delay); 
     } else {
-      if (this.deltaHome === null) this.push('/list'); 
+      if (this._deltaHome === null) this.push('/list'); 
     }
   }
   goBack = () => {
-    if (!this.history) return;
-    if (this.deltaHome < 0) {
-      setTimeout(() => this.history.goBack(), this.delay); 
+    if (!this._history) return;
+    if (this._deltaHome < 0) {
+      setTimeout(() => this._history.goBack(), this._delay); 
     } else {
       this.goHome();
     }
   }
   push = (...args) => {
-    if (this.history) setTimeout(() => this.history.push(...args), this.delay);
+    if (this._history) setTimeout(() => this._history.push(...args), this._delay);
   }
   replace = (...args) => {
-    if (this.history) setTimeout(() => this.history.replace(...args), this.delay);
+    if (this._history) setTimeout(() => this._history.replace(...args), this._delay);
   }
   pathMatch = (str) => {
-    return this.history.location.pathname.match(new RegExp(str, 'i'));
+    return this._history.location.pathname.match(new RegExp(str, 'i'));
   }
 }
 

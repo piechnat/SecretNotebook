@@ -13,13 +13,14 @@ export default class LessonLengthSelect extends React.Component {
     this.propsRest = propsRest;
     this.state = {length: value > 0 ? value : 45};
     this.dataObject = {name: props.name};
+    this.inputChange = this.inputChange.bind(this);
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.value !== prevProps.value) {
       this.setState({length: this.props.value});
     }
   }
-  inputChange = (data) => {
+  inputChange(data) {
     let val = parseFloat(data.value);
     this.setState({length: val});
     this.dataObject.value = val;
