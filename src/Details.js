@@ -1,9 +1,10 @@
 import React from 'react';
 import {FaRegCalendarAlt, FaRegCalendarPlus, FaUserEdit} from 'react-icons/fa';
-import {appNav, appScroll, MinutesToHours} from './Utils';
+import {appNav, appScroll, cn} from './Utils';
 import appData from './Utils/AppData';
 import QuickSelect from './Utils/QuickSelect';
 import {dateFmt} from './Utils/DateTimeField';
+import css from './Details.module.scss';
 
 export default class Details extends React.Component {
   constructor(props) {
@@ -55,15 +56,15 @@ export default class Details extends React.Component {
           <br/>
           {student.id>0&&<div>
             <p className="block-mdm">Przydział godzin:</p>
-            <div className="block-lrg total-length">
-              <div className="completed">
+            <div className={cn('block-lrg', css.totalLength)}>
+              <div className={css.completed}>
                 <MinutesToHours value={student.completed} />
-                <span className="min2hrs-hours"> / {student.totalHours}</span>
-                <br/><span className="title">UKOŃCZONO</span>
+                <span className={css.min2hrsHours}> / {student.totalHours}</span>
+                <br/><span className={css.title}>UKOŃCZONO</span>
               </div>
-              <div className="remained">
+              <div className={css.remained}>
                 <MinutesToHours value={(student.totalHours * 45) - student.completed} />
-                <br/><span className="title">POZOSTAŁO</span>
+                <br/><span className={css.title}>POZOSTAŁO</span>
               </div>
             </div>
             <div className="btn-pnl">
@@ -73,7 +74,7 @@ export default class Details extends React.Component {
             </div>
           </div>}
         </div>
-        {student.lessons.length > 0 && <table ref={this.listWrapper} className="lesson-list">
+        {student.lessons.length > 0 && <table ref={this.listWrapper} className={css.lessonList}>
           <thead>
             <tr>
               <th>Lp.</th><th>Data i godzina lekcji</th><th>Dł.</th>
@@ -81,8 +82,9 @@ export default class Details extends React.Component {
           </thead>
           <tbody>
           {this.order(student.lessons.map((item, index) => 
-            <tr className={(this.changedItemKey===item.key?'changed-item ':'')+
-                (item.absent?'absent':'')} key={index} 
+            <tr key={index} className={cn(item.absent && css.absent,
+                this.changedItemKey === item.key && 'changed-item'
+              )}
               onClick={()=>appNav.push('/lesson/'+ student.id +'/'+ item.key)}>
               <td>{index+1}.</td>
               <td>{dateFmt(item.time, 'T, <mark>DD. N RRRR</mark>, GG:II', true)}</td>
@@ -95,3 +97,23 @@ export default class Details extends React.Component {
     );
   }
 }
+
+export const MinutesToHours = (props) => {
+  let minutes = props.value || 0;
+  let fractional = minutes % 45;
+  let decimal = minutes / 45;
+  decimal = decimal < 0 ? Math.ceil(decimal) : Math.floor(decimal);
+  if (fractional === 0) fractional = ''; else {
+    let sign = fractional < 0 ? '' : '+';
+    if (fractional % 1 !== 0) fractional = fractional.toFixed(1);
+    fractional = (<span className={css.min2hrsMinutes}>{sign}{fractional}m</span>);
+  }
+  return (
+    <span style={props.style} 
+      className={cn(css.min2hrsHours, minutes < 0 && css.negative, props.className)}>
+      {decimal}{fractional}
+    </span>
+  );
+}
+
+export const { remained: m2hCssRemained } = css;

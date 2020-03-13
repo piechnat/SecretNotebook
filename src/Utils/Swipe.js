@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {cn} from '.';
 
 export default class Swipe extends React.Component {
   static propTypes = {
@@ -20,12 +21,12 @@ export default class Swipe extends React.Component {
   touchStart(e) {
     this.lockMouseEvents = true;
     this.startX = this.endX = e.touches[0].clientX;
-    this.setState({active: ' active'});
+    this.setState({active: 'active'});
   }
   mouseDown(e) {
     if (this.lockMouseEvents) return;
     this.startX = this.endX = e.clientX;
-    this.setState({active: ' active'});
+    this.setState({active: 'active'});
   }
   touchMove(e) {
     this.endX = e.touches[0].clientX;
@@ -54,7 +55,7 @@ export default class Swipe extends React.Component {
   render() {
     return (
       <div style={this.props.style}
-        className={(this.props.className||'')+this.state.active}
+        className={cn(this.props.className, this.state.active)}
         onTouchStart={this.touchStart} onMouseDown={this.mouseDown} 
         onTouchMove={this.touchMove} onMouseMove={this.mouseMove}
         onTouchEnd={this.touchEnd} onMouseUp={this.mouseUp}

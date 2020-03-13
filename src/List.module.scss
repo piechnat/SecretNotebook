@@ -1,0 +1,103 @@
+@import "./Assets/variables.scss";
+
+.studentList {
+  width: 100%;
+  font-size: 1.3em;
+  font-weight: var(--main-light-weight);
+  margin: 1rem 0 0 0;
+  border-top: 1px solid #fff;
+  background-color: $listBgColor;
+  .item {
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: 0.3s;
+    .title {
+      transition: 0.3s;
+      padding: 0.6em 0.6em;
+      border-bottom: 1px solid #fff;
+      white-space: nowrap;
+    }
+    &:global(.active) .title {
+      background-color: $highlightBgColor;
+      color: #666;
+      transition: none;
+    }
+    .menu {
+      z-index: 1;
+      transform: translateY(-0.05em);
+      padding: 0 0.4rem;
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 0 0.5rem 0.1rem rgba(45,45,45,0.4);
+      border-radius: 0.5rem;
+      white-space: nowrap;
+      right: 0.3em;
+      &.open {
+        visibility: visible;
+        transform: translateX(0);
+        transition: transform 0.2s ease-out;
+      }
+      &.close {
+        visibility: hidden;
+        transform: translateX(12em);
+        transition: transform 0.2s ease-in, visibility 0.2s;
+      }
+      a {
+        display: inline-block;
+        color: #555;
+        border-radius: 0.5rem;
+        padding: 0.3rem;
+      }
+      a:active {
+        background-color: #bbb;
+      }
+      svg {
+        font-size: 1.7em;
+        vertical-align: middle;
+      }
+      .smallSelect {
+        margin: 0.2em;
+        padding: 0.15em 0 0.25em 0.4em;
+        vertical-align: middle;
+        width: 2.9em;
+        box-shadow: none;
+        font-weight: var(--main-light-weight);
+        &:focus {
+          transform: none;
+        }
+      }
+    }
+    .indicator {
+      position: absolute;
+      right: 0; top: 0;
+      padding: 0.6em 0.4em;
+      color: #c1d6d7;
+      &:active {
+        color: #1374a1;
+      }
+      svg {
+        margin: 0;
+      }
+    }
+    .indicator *, .title * {
+      pointer-events: none;
+    }
+  }
+}
+
+@media (hover: hover) {
+  .studentList {
+    .item {
+      .title:hover {
+        background-color: $highlightBgColor;
+      }
+      .indicator:hover {
+        color: #1374a1;
+      }
+      .menu a:hover {
+        background-color: #eee;
+      }
+    }
+  }
+}

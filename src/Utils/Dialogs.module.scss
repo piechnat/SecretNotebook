@@ -1,0 +1,79 @@
+@import "../Assets/variables.scss";
+
+.confirmDialog {
+  box-sizing: border-box;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.3);
+  background: #fff;
+  width: 30rem;
+  max-width: 88%;
+  text-align: right;
+  .message {
+    font-size: 1.3em;
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+  .btnWrapper button {
+    margin: 0 0 0 1rem;
+    padding: 0.5rem 1rem;
+    min-width: 6em;
+  }
+}
+
+.toastNotification {
+  box-sizing: border-box;
+  display: flex;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.4);
+  background: #202124;
+  width: 30rem;
+  max-width: calc(100% - 1.4rem);
+  margin: 0 auto 1rem auto;
+  .message {
+    flex: 1;
+  }
+  .btnWrapper button {
+    color: #8ab4e6;
+    background: #3d3f44;
+    margin: 0 0 0 1rem;
+    padding: 0.5rem 1rem;
+  }
+}
+.toastNotification, .toastNotification b {
+  color: #fff;
+}
+
+.selectDialog {
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.3);
+  max-height: 96%;
+  max-width: 96%;
+  background: #fff;
+  color: #000;
+  font-size: 1.4rem;
+  overflow-x: hidden;
+  white-space: pre;
+  ul {
+    list-style-type: none;
+    margin: 0; 
+    padding: 0;
+    li {
+      border-top: 1px solid #ddd;
+      margin: 0;
+      padding: 0.7em 1em;
+      &.selected {
+        background-color: #eee;
+      }
+    }
+    li:first-child {
+      border-top: 0;
+    }
+    li:hover, li:active {
+      color: #fff;
+      background-color: #0078d7;
+    }
+  }
+}

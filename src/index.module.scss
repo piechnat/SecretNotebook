@@ -1,0 +1,169 @@
+@import "./Assets/variables.scss";
+
+#mainWrapper {
+  max-width: 40rem;
+  margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+}
+:global(.document-ready) #mainWrapper { 
+  opacity: 1;
+}
+:global(.document-lock) #mainWrapper { 
+  pointer-events: none;
+}
+#fixedBackground {
+  position: fixed;
+  top: 0; right: 0; bottom: -20%; left: 0;
+  background: linear-gradient(to bottom, $bgColor1, #1f3965 3.5rem, $bgColor2 83%);
+  z-index: -1;
+}
+#headerContentCover {
+  position: fixed;
+  width: 100%;
+  top: 0; left: 0;
+  height: 3.5rem;
+  background: linear-gradient($bgColor1 1rem, unquote($bgColor1+'00') 3.5rem);
+  z-index: 1;
+}
+#headerWrapper {
+  position: fixed;
+  box-sizing: border-box;
+  width: 100%;
+  top: 0; left: 0;
+  padding: 0.7rem;
+  z-index: 2;
+}
+#header {
+  position: relative;
+  box-sizing: border-box;
+  max-width: 40rem;
+  margin: 0 auto;
+  border: 0;
+  font-size: 1.8em;
+  color: $contBgColor;
+  background: linear-gradient(to right, $bgColor2, $bgColor1Light);
+  transition: 0.3s;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  & > span:first-child {
+    display: block;
+    padding: 0.06em 0 0.06em 0;
+    background: url("./Assets/icon.png") no-repeat 0.4rem 0.4rem / 2.5rem;
+    font-weight: 700;
+    text-shadow:
+    -1px -1px 0 $bgColor1Light, 
+    1px -1px 0 $bgColor1Light, 
+    -1px  1px 0 $bgColor1Light, 
+    1px  1px 0 $bgColor1Light;
+    line-height: 3.1rem;
+    text-align: center;
+  }
+  #workingDays {
+    position: absolute;
+    margin: 0;
+    background-color: $bgColor1Light;
+    width: 1.3rem;
+    padding: 0.06rem;
+    top: 0.6rem; 
+    left: 0.8rem;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 0.94rem;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+  }
+  #workingDays:first-line {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 300;
+  }
+  &:active {
+    transition: none;
+    text-shadow: none;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 
+      0 0 0 10rem rgba(0, 0, 0, 0.2) inset;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+}
+#content {
+  position: relative;
+  margin: 3.9rem 0 0.6rem 0;
+  background-color: $contBgColor;
+  overflow: hidden;
+  z-index: 0;
+}
+#footerWrapper {
+  box-sizing: border-box;
+  width: 100%;
+}
+#fixedNavBar > #footerWrapper {
+  position: fixed;
+  bottom: 0; left: 0;
+  padding: 0 0.7rem 0.7rem 0.7rem;
+  z-index: 2;
+}
+#fixedNavBar #footerWrapper + #footerMargin { 
+  margin-bottom: 3.6rem; 
+}
+#fixedNavBar > #footerContentCover {
+  position: fixed;
+  width: 100%;
+  bottom: 0; left: 0;
+  height: 3rem;
+  background: linear-gradient(unquote($bgColor2+'00'), $bgColor2 2rem);
+  z-index: 1;
+}
+#footer {
+  box-sizing: border-box;
+  height: 3rem;
+  max-width: 40rem;
+  margin: 0 auto;
+  border: 0;
+  display: flex;
+  background-color: $contBgColor;
+  button {
+    padding: 0.8rem 0.9rem 0.8rem 0.6rem;
+    margin: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: $contBgColor;
+    box-shadow: none;
+    border-radius: 0;
+    border-right: 1px solid #fff;
+    transform: none;
+    &:active:not(.disabled)  {
+      background: #bbb;
+      color: #fff;
+    }
+    &.disabled {
+      color: #ddd;
+      cursor: auto;
+      pointer-events: none;
+    }
+    &:first-child {
+      border-bottom-left-radius: 0.5rem;
+      border-top-left-radius: 0.5rem;
+    }
+    &:last-child {
+      border: 0;
+      border-bottom-right-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+  }
+  .freeSpace {
+    border-right: 1px solid #fff;
+    flex: 1;
+  }
+}
+#header, #content, #footer {
+  border-radius: 0.5rem;
+}
+#content, #footer {
+  box-shadow: 0 0 0.5rem 0.1rem rgba(45, 45, 45, 0.4);
+}
+
+.fadeTransition {
+  background-color: $contBgColor;
+}

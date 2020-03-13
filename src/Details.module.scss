@@ -1,0 +1,87 @@
+@import "./Assets/variables.scss";
+
+.lessonList {
+  width: 100%;
+  border-spacing: 0;
+  background-color: $listBgColor;
+  border-bottom: 1px solid #fff;
+  margin-bottom: 1rem;
+  td, th {
+    border: solid #fff;
+    border-width: 1px 0 0 0;
+    padding: 0.8em 0.5em 0.8em 0;
+  }
+  tbody {
+    font-weight: var(--main-light-weight);
+    tr {
+      cursor: pointer;
+      transition: 0.3s;
+      &:active {
+        background-color: $highlightBgColor;
+        color: #666;
+        transition: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+    tr.absent td:nth-child(2) {
+      text-decoration: line-through;
+      color: #fff;
+    }
+    tr.absent * { color: #777; }
+  }
+  thead th {
+    font-weight: var(--main-medium-weight);
+    background-color: #eee;
+  }
+  td:first-child, th:first-child {
+    text-align: right;
+    padding-left: 0.5em;
+    font-weight: var(--main-medium-weight);
+  }
+  th:last-child {
+    text-align: left;
+  }
+}
+
+@media (hover: hover) {
+  .lessonList tbody tr:hover {
+    background-color: $highlightBgColor;
+    transition: none;
+  }
+}
+
+.totalLength {
+  display: inline-flex !important;
+  margin: 0 1rem 0.5rem 0;
+  font-weight: var(--main-light-weight);
+  text-align: center;
+  & > .completed {
+    margin-right: 1em;
+  }
+  & > .remained {
+    flex: 1;
+  }
+  .title {
+    font-size: 0.8em;
+  }
+  .min2hrsHours {
+    color: #777;
+    font-size: 1.8em;
+  }
+}
+.remained > .min2hrsHours, .remained.min2hrsHours {
+  color: #009900;
+  font-weight: var(--main-light-weight);
+}
+.remained > .min2hrsHours.negative, .remained.min2hrsHours.negative {
+  color: #d15854;
+}
+.min2hrsMinutes:before {
+  content: " ";
+}
+.min2hrsMinutes  {
+  position: relative; 
+  top: -0.6em; 
+  left: -0.1em;
+  font-size: 0.6em;
+}

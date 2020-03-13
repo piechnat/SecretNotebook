@@ -3,12 +3,14 @@ import {Link} from 'react-router-dom';
 import {FiArrowLeft} from 'react-icons/fi';
 import {MdSwapVert} from 'react-icons/md';
 import {FaUserEdit, FaUserPlus, FaUsers, FaRegCalendarPlus} from 'react-icons/fa';
-import {appNav, appScroll, MinutesToHours} from './Utils';
+import {appNav, appScroll, cn} from './Utils';
+import {MinutesToHours, m2hCssRemained} from './Details';
 import {toastNotification} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import LessonLengthSelect from './Utils/LessonLengthSelect'
 import Swipe from  './Utils/Swipe';
 import {dateFmt} from './Utils/DateTimeField';
+import css from './List.module.scss';
 
 export default class List extends React.Component {
   constructor(props) {
@@ -116,7 +118,7 @@ export default class List extends React.Component {
   }
   render() {
     return (
-      <div className="v_pad">
+      <div style={{paddingTop:'1rem',paddingBottom:'1rem'}}>
         <div className="h2-btn" style={{margin:'0 1rem'}}>
           <h2 style={{margin:0}}><FaUsers/>Studenci</h2>
           <div>
@@ -125,49 +127,45 @@ export default class List extends React.Component {
             </button>
           </div>
         </div>
-        {this.state.studentList.length>0&&
-          <div ref={this.listWrapper} className="student-list">
-            {this.state.studentList.map((stdnt, index) => {
-              const changed = this.state.changedItemId === stdnt.id ? 
-                ' changed-item' : '';
-              const selected = this.state.swapIdx > -1 && this.state.swapIdx !== index ? 
-                ' selected-item' : '';
-              const menuState = this.state.expanded === stdnt.id ? 
-                ' open' : ' close';
-              const remained = (stdnt.totalHours * 45) - stdnt.completed;
-              return (
-                <Swipe 
-                  key={stdnt.id+'-'+index+'-'+stdnt.completed} 
-                  className={'item'+changed+selected}
-                  onClick={(e)=>this.listItemClickHandler(stdnt.id,index,e)}
-                  onLeft={(e)=>this.expandMenu(stdnt.id,1)} 
-                  onRight={(e)=>this.expandMenu(stdnt.id,0)}
-                >
-                <div key="indicator" name="indicator" className="indicator"><FiArrowLeft/></div>
-                <div key="menu" className={'menu'+menuState}>
-                  {this.ownOrder && <Link to="#" onClick={(e) => {
-                      e.preventDefault();
-                      this.setState({expanded: 0, swapIdx: index});
-                    }}><MdSwapVert/>
-                  </Link>}
-                  <Link to={'/student/'+stdnt.id}><FaUserEdit/></Link>
-                  <LessonLengthSelect 
-                    className="small-select" 
-                    name={stdnt.id} 
-                    value={this.state.lessonLength[stdnt.id]}
-                    onChange={this.lessonLengthChangeHandler}
-                  />
-                  <Link to="#" onClick={(e)=>this.addClickHandler(stdnt.id,e)}>
-                    <FaRegCalendarPlus/>
-                  </Link>
-                </div>
-                <div key="title" name="title" className={'title'}>
-                  {stdnt.title} &nbsp;<MinutesToHours className="remained" value={remained} />      
-                </div>
-                </Swipe>
-              );
-            })
-          }
+        {this.state.studentList.length > 0 &&
+          <div className={css.studentList} ref={this.listWrapper}>
+          {this.state.studentList.map((stdnt, index) =>
+            <Swipe key={stdnt.id + index + stdnt.completed} 
+              onClick={(e)=>this.listItemClickHandler(stdnt.id,index,e)}
+              onLeft={(e)=>this.expandMenu(stdnt.id,1)} 
+              onRight={(e)=>this.expandMenu(stdnt.id,0)}
+              className={cn(css.item,
+                this.state.changedItemId === stdnt.id && 'changed-item',
+                this.state.swapIdx > -1 && this.state.swapIdx !== index && 'selected-item'
+              )}>
+              <div className={css.indicator} key="indicator" name="indicator">
+                <FiArrowLeft/>
+              </div>
+              <div key="menu" className={cn(css.menu, 
+                  this.state.expanded === stdnt.id ? css.open : css.close
+                )}>
+                {this.ownOrder && <Link to="#" onClick={(e) => {
+                    e.preventDefault();
+                    this.setState({expanded: 0, swapIdx: index});
+                  }}><MdSwapVert/>
+                </Link>}
+                <Link to={'/student/'+stdnt.id}><FaUserEdit/></Link>
+                <LessonLengthSelect 
+                  className={css.smallSelect} 
+                  name={stdnt.id} 
+                  value={this.state.lessonLength[stdnt.id]}
+                  onChange={this.lessonLengthChangeHandler}
+                />
+                <Link to="#" onClick={(e)=>this.addClickHandler(stdnt.id,e)}>
+                  <FaRegCalendarPlus/>
+                </Link>
+              </div>
+              <div className={css.title} key="title" name="title">
+                {stdnt.title} &nbsp;<MinutesToHours className={m2hCssRemained} 
+                  value={(stdnt.totalHours * 45) - stdnt.completed} />      
+              </div>
+            </Swipe>
+          )}
           </div>
         }
       </div>

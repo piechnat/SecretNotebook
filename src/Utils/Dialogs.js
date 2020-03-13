@@ -1,5 +1,49 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
+import {cn} from '.';
+import css from './Dialogs.module.scss';
+
+export function confirmDialog(message, buttons = ['OK', 'Anuluj']) {
+  return new Promise((resolve) => {
+    const container = document.createElement('div'), animTime = 200;
+    document.body.appendChild(container);
+    const close = () => setTimeout(() => {
+      ReactDOM.unmountComponentAtNode(container);
+      if (container.parentNode === document.body) document.body.removeChild(container);
+      window.removeEventListener('popstate', onPopstate);
+    }, animTime);
+    const onPopstate = () => { resolve(false); close(); };
+    window.addEventListener('popstate', onPopstate);
+    const ConfirmDialog = () => {
+      const [opacity, setOpacity] = useState(0);
+      useEffect(() => {
+        setTimeout(() => setOpacity(1), 50);
+      }, []);
+      return (
+        <div style={{opacity: opacity,
+          transition: 'opacity '+ animTime +'ms ease-in',
+          position: 'fixed', zIndex: 2147483647, 
+          left: 0, top: 0, right: 0, bottom: 0,
+          background: 'rgba(0, 0, 0, 0.7)'
+        }}>
+          <div className={css.confirmDialog} style={{
+            position: 'absolute', top: '50%', left: '50%', 
+            transform: 'translateX(-50%) translateY(-50%)', 
+          }}>
+            <div className={css.message}>{message}</div>
+            <div className={css.btnWrapper}>
+              {buttons[1] && <button 
+                onClick={()=>{setOpacity(0);resolve(false);close()}}>{buttons[1]}</button>}
+              {buttons[0] && <button 
+                onClick={()=>{setOpacity(0);resolve(true);close()}}>{buttons[0]}</button>}
+            </div>
+          </div>
+        </div>
+      );
+    };
+    ReactDOM.render(<ConfirmDialog/>, container);
+  });
+}
 
 export function toastNotification(message, duration, button) {
   if (!(duration > 0)) duration = 3000;
@@ -36,7 +80,7 @@ export function toastNotification(message, duration, button) {
       resolve(res === true);
     }
     const dismiss = (e) => {
-      if (!e.target.classList.contains('btn')) { e.preventDefault(); close(false); }
+      if (e.target.getAttribute('name') !== 'button') { e.preventDefault(); close(false); }
     }
     const ToastNotification = () => {
       useEffect(() => {
@@ -49,58 +93,16 @@ export function toastNotification(message, duration, button) {
         setTimeout(close, duration);
       }, []);
       return (
-        <div className="toast-notification" onTouchEnd={dismiss} onMouseUp={dismiss}>
-          <div className="toast-notification-msg">{message}</div>
-          <div className="toast-notification-btn">
-            {button&&<button className="btn" 
+        <div className={css.toastNotification} onTouchEnd={dismiss} onMouseUp={dismiss}>
+          <div className={css.message}>{message}</div>
+          <div className={css.btnWrapper}>
+            {button && <button name="button" 
               onClick={()=>setTimeout(()=>close(true),10)}>{button}</button>}
           </div>
         </div>
       );
     };
     ReactDOM.render(<ToastNotification/>, container);
-  });
-}
-  
-export function confirmDialog(message, buttons = ['OK', 'Anuluj']) {
-  return new Promise((resolve) => {
-    const container = document.createElement('div'), animTime = 200;
-    document.body.appendChild(container);
-    const close = () => setTimeout(() => {
-      ReactDOM.unmountComponentAtNode(container);
-      if (container.parentNode === document.body) document.body.removeChild(container);
-      window.removeEventListener('popstate', onPopstate);
-    }, animTime);
-    const onPopstate = () => { resolve(false); close(); };
-    window.addEventListener('popstate', onPopstate);
-    const ConfirmDialog = () => {
-      const [opacity, setOpacity] = useState(0);
-      useEffect(() => {
-        setTimeout(() => setOpacity(1), 50);
-      }, []);
-      return (
-        <div style={{opacity: opacity,
-          transition: 'opacity '+ animTime +'ms ease-in',
-          position: 'fixed', zIndex: 2147483647, 
-          left: 0, top: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.7)'
-        }}>
-          <div className="confirm-dialog" style={{
-            position: 'absolute', top: '50%', left: '50%', 
-            transform: 'translateX(-50%) translateY(-50%)', 
-          }}>
-            <div className="confirm-dialog-msg">{message}</div>
-            <div className="confirm-dialog-btn">
-              {buttons[1]&&<button className="btn-cancel" 
-                onClick={()=>{setOpacity(0);resolve(false);close();}}>{buttons[1]}</button>}
-              {buttons[0]&&<button className="btn-ok" 
-                onClick={()=>{setOpacity(0);resolve(true);close();}}>{buttons[0]}</button>}
-            </div>
-          </div>
-        </div>
-      );
-    };
-    ReactDOM.render(<ConfirmDialog/>, container);
   });
 }
   
@@ -122,8 +124,8 @@ export function selectDialog(optionsList, defIndex) {
       useEffect(() => {
         setTimeout(() => setOpacity(1), 50);
         if (selDlg) {
-          const selected = selDlg.getElementsByClassName('selected')[0];
-          if (selected) selected.scrollIntoView({block: "center"});
+          const selected = selDlg.getElementsByClassName(css.selected)[0];
+          if (selected) selected.scrollIntoView({block: 'center'});
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
@@ -135,7 +137,7 @@ export function selectDialog(optionsList, defIndex) {
           left: 0, top: 0, right: 0, bottom: 0,
           background: 'rgba(0, 0, 0, 0.7)'
         }}>
-          <div ref={(e)=>selDlg=e} className="select-dialog" 
+          <div ref={(e)=>selDlg=e} className={css.selectDialog} 
             style={{
               position: 'absolute', top: '50%', left: '50%', 
               transform: 'translate(-50%, -50%)'
@@ -143,7 +145,7 @@ export function selectDialog(optionsList, defIndex) {
             <ul>
               {optionsList.map((item, index) => 
                 <li key={index} 
-                  className={(index===defIndex)?'selected':undefined} 
+                  className={cn(index === defIndex && css.selected)} 
                   onClick={()=>setTimeout(()=>{
                     setOpacity(0);resolve(index);close(animTime);
                   },10)}>

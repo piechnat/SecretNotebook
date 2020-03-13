@@ -1,0 +1,176 @@
+@import "./Assets/variables.scss";
+
+html { 
+  font-size: 1em;
+}
+@media screen and (max-width: 25.5em) {
+  html { font-size: 3.9vw; }
+}
+@media screen and (min-width: 67em) {
+  html { font-size: 1.5vw; }
+}
+html, body { margin: 0; border: 0; padding: 0; }
+body, select, input, button, textarea  {
+  font-family: var(--main-font-family);
+  font-weight: var(--main-medium-weight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #000;
+  font-size: 1em;
+}
+h1, h2, h3, h4, h5, h6, b {
+  color: #444;
+  font-weight: var(--main-bold-weight);
+}
+body {
+  background: $bgColor1;
+  padding: 0.7rem;
+  overscroll-behavior: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+p, li, h1, h2, h3, h4, h5, h6 {
+  line-height: 1.5em;
+  margin: 0 0 0.7em 0;
+}
+ol, ul {
+  padding: 0 0 0 1.5em;
+}
+h2 { 
+  font-size: 1.5em;
+  border-bottom: 1px solid #ddd; 
+}
+h3 {
+  font-size: 1.2em;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.1em;
+  font-weight: var(--main-light-weight);
+}
+select:focus, input:focus, textarea:focus, button:focus, a:focus {
+  outline: none;
+}
+select, input {
+  font-size: 1.2em;
+}
+select, input, textarea {
+  padding: 0.3em 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 0.3rem;
+  background: #fff;
+  font-weight: var(--main-light-weight);
+  box-shadow: 0 0 0.3rem 0.05rem rgba(85,85,85,0.2);
+  box-sizing: border-box;
+}
+label {
+  display: inline-block;
+  font-size: 1.1em;
+  font-weight: var(--main-light-weight);
+  padding: 0.4em 0.5em;
+  border-radius: 0.3rem;
+  background-color: #f0f0f2;
+}
+label input[type=checkbox] { margin: 0 0.5em 0 0; }
+select:focus, input:focus, textarea:focus {
+  border: 1px solid #888;
+  transform: translateY(-0.05rem) translateX(-0.05rem);
+  box-shadow: 0.05rem 0.05rem 0.3rem 0.05rem rgba(45,45,45,0.3);
+}
+select, button {
+  appearance: none;
+}
+button {
+  font-size: 1.1em;
+  padding: 0.3em 0.7em 0.3em 0.4em;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  background: #fff;
+  box-shadow: 0 0 0.3rem 0.05rem rgba(45,45,45,0.3);
+  box-sizing: border-box;
+  transition: 0.3s;
+  white-space: nowrap;
+  cursor: pointer;
+  &:active {
+    border: 1px solid #888;
+    background: #eee;
+    transform: translateY(0.05rem) translateX(0.05rem);
+    box-shadow: none;
+    border-color: #bbb;
+    -webkit-tap-highlight-color: transparent;
+    transition: none;
+  }
+}
+a {
+  color: #1374a1;
+  text-decoration: none;
+}
+mark {
+  background-color: transparent;
+  color: #442480;
+}
+svg {
+  font-size: 1.2em;
+  vertical-align: -0.18em;
+}
+button svg, h2 svg {
+  margin-right: 0.3em;
+}
+a:active svg {
+  color: #222;
+  background-color: #bbb;
+}
+:disabled {
+  background-color: transparent;
+  border-color: #ddd;
+  box-shadow: none;
+}
+
+.pad {
+  padding: 1rem;
+}
+.frm select, .frm input, .frm button, .frm textarea {
+  margin: 0 1rem 1rem 0;
+}
+.h2-btn {
+  display: flex;
+  h2 {
+    flex: 1;
+    white-space: nowrap;
+  }
+  button {
+    margin: 0 0 0 1rem;
+    white-space: nowrap;
+  }
+}
+.btn-pnl {
+  button {
+    margin: 0.5rem 1rem 1rem 0;
+  }
+}
+.block-lrg, .block-mdm, .block-sml {
+  display: inline-block;
+}
+.block-lrg {
+  width: 18.5rem;
+}
+.block-mdm {
+  width: 11rem;
+  margin-bottom: 0.3em;
+}
+.block-sml {
+  width: 10rem;
+}
+@keyframes changed-item {
+  0% { background-color: $highlightBgColor; }
+  100% { background-color: $listBgColor; }
+}
+.changed-item {
+  animation: changed-item 3s ease-in;
+}
+.selected-item {
+  background-color: #ebefed;
+}

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 import {IoIosArrowDropleft, IoIosHelpCircleOutline, IoIosSettings} from 'react-icons/io';
 import * as serviceWorker from './serviceWorker';
-import {config, appNav, appScroll, setSystemFont, workingDays} from './Utils';
+import {config, appNav, appScroll, setSystemFont, cn} from './Utils';
+import workingDays from './Utils/WorkingDays';
 import {confirmDialog} from './Utils/Dialogs';
 import appData from './Utils/AppData';
 import FlexibleHeight from './Utils/FlexibleHeight';
@@ -15,7 +16,9 @@ import Details from './Details';
 import Lesson from './Lesson';
 import Settings from './Settings';
 import Help, {Demo} from './Help';
-import './index.scss';
+import './Assets/fonts.css';
+import './index.global.scss';
+import css from './index.module.scss';
 
 if (appData.systemFont) setSystemFont(1);
 if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
@@ -58,7 +61,7 @@ class RootComponent extends React.Component {
     if (appScroll.endIsUnlocked()) {
       if (appScroll.isUnlockedForElement()) {
         appScroll.toElement('changed-item');
-      } else if (appNav.scrollMemory > 0) {
+      } else if (appNav.scrollMemory >= 0) {
         appScroll.toPos(appNav.scrollMemory);
       }
     }
@@ -68,22 +71,22 @@ class RootComponent extends React.Component {
     const location = this.props.location, pth = location.pathname.substr(1);
     const msgProps = (o, n) => ({...o, sendMessage: this.sendMessage, message: this.state[n]});
     return (
-      <div id="main-warpper">
-        <div id="fixed-background"/>
-        <div id="header-content-cover"/>
-        <div id="header-wrapper">
-          <h1 id="header" onClick={()=>appNav.goHome()}>
+      <div id={css.mainWrapper}>
+        <div id={css.fixedBackground}/>
+        <div id={css.headerContentCover}/>
+        <div id={css.headerWrapper}>
+          <h1 id={css.header} onClick={()=>appNav.goHome()}>
             <span>Secret Notebook</span>
-            {workingDays && <span id="working-days">
+            {workingDays && <span id={css.workingDays}>
               {['ND', 'PN', 'WT', 'ŚR', 'CZ', 'PT', 'SB'][new Date().getDay()]}<br/>
               {workingDays}
             </span>}
           </h1>
         </div>
-        <div id="content">
+        <div id={css.content}>
           <FlexibleHeight duration={this.state.noStretching?0:200} 
             onContentChange={this.contentChangeHandler} onResizeEnd={this.resizeEndHandler}>
-            <FadeTransition id={location.key||''} duration={300} className="fade-transition">
+            <FadeTransition id={location.pathname} duration={300} className={css.fadeTransition}>
               <Switch location={location}>
                 <Route path="/list" render={(p)=><List {...msgProps(p,'list')}/>}/>
                 <Route path="/student/:id?" render={(p)=><Student {...msgProps(p)}/>}/>
@@ -98,26 +101,26 @@ class RootComponent extends React.Component {
             </FadeTransition>
           </FlexibleHeight>
         </div>
-        <div id={this.state.fixedNavBar?'fixed-nav-bar':''}>
-          <div id="footer-content-cover"/>
-          <div id="footer-wrapper">
-            <div id="footer">
-              <button className={pth==='list'?'disabled':''} 
+        <div id={cn(this.state.fixedNavBar && css.fixedNavBar)}>
+          <div id={css.footerContentCover}/>
+          <div id={css.footerWrapper}>
+            <div id={css.footer}>
+              <button className={cn(pth === 'list' && css.disabled)} 
                   onClick={()=>appNav.goBack()}>
                 <IoIosArrowDropleft/><span>Wstecz</span>
               </button>
-              <div className="free-space"/>
-              <button className={pth==='settings'?'disabled':''} 
+              <div className={css.freeSpace}/>
+              <button className={cn(pth === 'settings' && css.disabled)} 
                   onClick={()=>appNav.push('/settings')}>
                 <IoIosSettings/><span>Ustawienia</span>
               </button>
-              <button className={pth==='help'?'disabled':''} 
+              <button className={cn(pth === 'help' && css.disabled)} 
                   onClick={()=>appNav.push('/help')}>
                 <IoIosHelpCircleOutline/><span>Pomoc</span>
               </button>
             </div>
           </div>
-          <div id="footer-margin"></div>
+          <div id={css.footerMargin}></div>
         </div>
       </div>
     );
