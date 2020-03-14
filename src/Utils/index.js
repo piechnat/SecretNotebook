@@ -33,7 +33,7 @@ class AppNav {
   _delay = 10;
   scrollMemory = -1;
   onScrollMemoryChange = null;
-  androidOS = true; /* /android/i.test(navigator.userAgent); */
+  androidOS = /android/i.test(navigator.userAgent);
   pwaMode = window.location.search === '?PWASTART';
   init(hstr) {
     if (!hstr || this._history) return false;
